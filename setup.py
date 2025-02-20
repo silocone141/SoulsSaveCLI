@@ -10,7 +10,7 @@ setup(
     A CLI tool designed to manage save files for the FromSoftware Souls series. Can be made to work with some other games as well.
     """,
     long_description_content_type="text/markdown",
-    url="url",
+    url="https://github.com/silocone141/SoulsSaveCLI",
     author="silocone"
     include_package_data=True,
     install_requires=[
