@@ -5,6 +5,13 @@ setup(
     name='soulsave',
     version='0.1.0',
     packages=find_packages(),
+    long_description=
+    """
+    A CLI tool designed to manage save files for the FromSoftware Souls series. Can be made to work with some other games as well.
+    """,
+    long_description_content_type="text/markdown",
+    url="url",
+    author="silocone"
     include_package_data=True,
     install_requires=[
         'Click',
@@ -17,6 +24,6 @@ setup(
         ],
     },
     extras_require={
-        "dev": ["pytest", "twine"]
+        "dev": ["twine"]
     }
 )
