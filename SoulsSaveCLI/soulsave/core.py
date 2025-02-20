@@ -106,7 +106,7 @@ def list(subdir):
             click.echo(side_functions.list_files(full_path))
 
         else:
-            click.echo(f"Directory '{subdir}' does not exist in '{root}'\n Use `soulsave list` to list available options")
+            click.echo(f"Directory '{subdir}' does not exist in '{root}'\n Use 'soulsave list' to list available options")
             quit()
 
     else:
@@ -127,7 +127,7 @@ def new(subdir):
     if not new_real_path.startswith(root_real_path):
         click.echo(
             f"Directory '{subdir}' does not exist in {config_data[2]}.\n"
-            "Use `soulsave list` to list available options"
+            "Use 'soulsave list' to list available options"
         )
         quit()
 
@@ -182,9 +182,9 @@ def add(save_name, subdir):
         )
         quit()
 
-    elif not os.path.isdir(f"{config_data[2]}{subdir}/") and subdir_name:
+    elif not os.path.isdir(f"{config_data[2]}{subdir}/") and subdir:
         click.echo(
-            f"'{config_data[2]}{subdir}/' does not exist. Use `soulsave list` "
+            f"'{config_data[2]}{subdir}/' does not exist. Use 'soulsave list' "
             "to list available save state subdirectories"
         )
         quit()
@@ -203,7 +203,7 @@ def add(save_name, subdir):
                 else:
                     click.echo(
                         f"Directory '{subdir}' does not exist in {config_data[2]}.\n"
-                        "Use `soulsave list` to list available options"
+                        "Use 'soulsave list' to list available options"
                     )
                     quit()
 
@@ -245,7 +245,7 @@ def load(save_name, subdir):
         dest = config_data[0] + config_data[1]
 
         if not os.path.isfile(org):
-            click.echo(f"'{org}' does not exist. Use `soulsave list` for a list of available options")
+            click.echo(f"'{org}' does not exist. Use 'soulsave list' for a list of available options")
             quit()
 
         elif not os.path.isfile(dest):
@@ -275,8 +275,8 @@ def load(save_name, subdir):
             if not os.path.isfile(save_name):
                 click.echo(
                     f"{save_name} is a directory, not a save file name.\n"
-                    "Use `soulsave list` for a list of available options or use "
-                    "`soulsave --help` for more information on how to use the command"
+                    "Use 'soulsave list' for a list of available options or use "
+                    "'soulsave --help' for more information on how to use the command"
                 )
                 quit()
 
@@ -300,7 +300,7 @@ def load(save_name, subdir):
 
         else:
             click.echo(
-                "Save name does not exist; please try again or use `soulsave list` "
+                "Save name does not exist; please try again or use 'soulsave list' "
                 "to check available save states"
             )
             quit()
@@ -315,7 +315,16 @@ def rm(parent_dir, save_name):
     ## ADD ROBUST --HELP COMMAND!!  ##
     ##################################
 
-    """Deletes specified save file or subdirectory"""
+    """
+    Deletes specified save file or subdirectory\n
+    To delete an entire directory, do not enter a save name\n
+    To delete a single save file, provide its parent directory and the save file
+    name\n
+    To delete a single save file in the root directory, you may either enter the
+    path to the save states directory or use 'root' as an alias (if you are
+    using the default save states directory 'SaveStates/', you can just type
+    'SaveStates')
+    """
 
     config_data = side_functions.get_data('config.yaml')
     file_data = os.path.splitext(config_data[1])
@@ -336,7 +345,7 @@ def rm(parent_dir, save_name):
         else:
             click.echo(
                 f"Directory '{parent_dir}' does not exist in {config_data[2]}.\n"
-                "Use `soulsave list` to list available options"
+                "Use 'soulsave list' to list available options"
             )
             quit()
 
@@ -352,7 +361,7 @@ def rm(parent_dir, save_name):
         if not os.path.isfile(full_file_path):
             click.echo(
                 f"'{full_file_path}' does not exist. Please try again or use "
-                "`soulsave list` to review the contents of your save "
+                "'soulsave list' to review the contents of your save "
                 "states directory."
             )
         else:
@@ -372,12 +381,12 @@ def rm(parent_dir, save_name):
                 click.echo(f"Successfully removed {parent_dir}/{save_name}{file_ext}")
     else:
         if not os.path.isdir(full_dir_path):
-            click.echo(f"'{full_dir_path}' does not exist. Please try again or use"
-                "`soulsave list` to review the contents of your save"
+            click.echo(f"'{full_dir_path}' does not exist. Please try again or use "
+                "'soulsave list' to review the contents of your save"
                 "state directory.")
         else:
             click.confirm(
-                f"Are you sure you want to delete {parent_dir}?"
+                f"Are you sure you want to delete {parent_dir}? "
                 "This will erase all of its contents!",
                 abort=True
             )
