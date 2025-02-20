@@ -114,19 +114,19 @@ def list(subdir):
 
 
 @click.command()
-@click.argument('subdir_name')
-def new(subdir_name):
+@click.argument('subdir')
+def new(subdir):
 
     """Creates a new subdir in your save states folder"""
 
     config_data = side_functions.get_data('config.yaml')
-    new_path = f'{config_data[2]}{subdir_name}/'
-    new_real_path = os.path.realpath(f'{config_data[2]}{subdir_name}/')
+    new_path = f'{config_data[2]}{subdir}/'
+    new_real_path = os.path.realpath(f'{config_data[2]}{subdir}/')
     root_real_path = os.path.realpath(config_data[2])
 
     if not new_real_path.startswith(root_real_path):
         click.echo(
-            f"Directory '{subdir_name}' does not exist in {config_data[2]}.\n"
+            f"Directory '{subdir}' does not exist in {config_data[2]}.\n"
             "Use `soulsave list` to list available options"
         )
         quit()
@@ -142,8 +142,8 @@ def new(subdir_name):
 
 @click.command()
 @click.argument('save_name')
-@click.argument('subdir_name', required=False)
-def add(save_name, subdir_name):
+@click.argument('subdir', required=False)
+def add(save_name, subdir):
 
     """
     This script adds a savestate to the specified subdirectory
@@ -156,15 +156,15 @@ def add(save_name, subdir_name):
 
     org = config_data[0] + config_data[1]
 
-    if subdir_name:
-        dest = f"{config_data[2]}{subdir_name}/{save_name}{file_ext}"
+    if subdir:
+        dest = f"{config_data[2]}{subdir}/{save_name}{file_ext}"
     else:
         dest = f"{config_data[2]}{save_name}{file_ext}"
 
     if os.path.isfile(dest):
-        if subdir_name:
+        if subdir:
             click.echo(
-                f"'{subdir_name}/{save_name}' already exists! Please choose a "
+                f"'{subdir}/{save_name}' already exists! Please choose a "
                 "different name"
             )
             quit()
@@ -182,35 +182,35 @@ def add(save_name, subdir_name):
         )
         quit()
 
-    elif not os.path.isdir(f"{config_data[2]}{subdir_name}/") and subdir_name:
+    elif not os.path.isdir(f"{config_data[2]}{subdir}/") and subdir_name:
         click.echo(
-            f"'{config_data[2]}{subdir_name}/' does not exist. Use `soulsave list` "
+            f"'{config_data[2]}{subdir}/' does not exist. Use `soulsave list` "
             "to list available save state subdirectories"
         )
         quit()
 
     else:
-        if subdir_name:
-            if subdir_name + '/' == config_data[2]:
+        if subdir:
+            if subdir + '/' == config_data[2]:
                 full_path = config_data[2]
 
             else:
-                full_path = config_data[2] + subdir_name
+                full_path = config_data[2] + subdir
 
-            if not (os.path.isdir(full_path) and subdir_name in os.listdir(config_data[2])):
-                if subdir_name + '/' == config_data[2]:
+            if not (os.path.isdir(full_path) and subdir in os.listdir(config_data[2])):
+                if subdir + '/' == config_data[2]:
                     pass
                 else:
                     click.echo(
-                        f"Directory '{subdir_name}' does not exist in {config_data[2]}.\n"
+                        f"Directory '{subdir}' does not exist in {config_data[2]}.\n"
                         "Use `soulsave list` to list available options"
                     )
                     quit()
 
         shutil.copyfile(org, dest)
 
-        if subdir_name:
-            click.echo(f"Successfully created save '{subdir_name}/{save_name}'")
+        if subdir:
+            click.echo(f"Successfully created save '{subdir}/{save_name}'")
         else:
             click.echo(f"Successfully created save '{config_data[2]}{save_name}'")
 
@@ -225,8 +225,8 @@ def add(save_name, subdir_name):
     help="Reload the last loaded save file"
 )
 @click.argument('save_name')
-@click.argument('subdir_name', required=False)
-def load(save_name, subdir_name):
+@click.argument('subdir', required=False)
+def load(save_name, subdir):
 
     """
     Loads the specified save file from the specified subdirectory
@@ -236,12 +236,12 @@ def load(save_name, subdir_name):
     # Extract data from config.yaml into a list
     config_data = side_functions.get_data('config.yaml')
 
-    if subdir_name:
+    if subdir:
         # Get file extension of game save file
         file_data = os.path.splitext(config_data[1])
         file_ext = file_data[1]
 
-        org = f"{config_data[2]}{subdir_name}/{save_name}{file_ext}"
+        org = f"{config_data[2]}{subdir}/{save_name}{file_ext}"
         dest = config_data[0] + config_data[1]
 
         if not os.path.isfile(org):
@@ -261,7 +261,7 @@ def load(save_name, subdir_name):
         config_dict["last_loaded"] = org
         side_functions.load_data('config.yaml', config_dict)
 
-        click.echo(f"Successfully loaded {subdir_name}/{save_name}")
+        click.echo(f"Successfully loaded {subdir}/{save_name}")
 
     else:
         test_unique = side_functions.load_unique(save_name, config_data[2])
