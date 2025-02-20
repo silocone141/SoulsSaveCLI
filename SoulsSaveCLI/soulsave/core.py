@@ -30,8 +30,18 @@ def init(game, save, states):
 
     """Initial setup, set key variables in config file"""
 
-    with open('config.yaml', 'r') as file:
-        config_data = yaml.safe_load(file)
+    try:
+        with open('config.yaml', 'r') as file:
+            config_data = yaml.safe_load(file)
+
+    except FileNotFoundError:
+        with open('config.yaml', 'w'):
+            config_data = {
+                "last_loaded": "",
+                "save_file": "",
+                "save_location": "",
+                "save_states_dir": ""
+            }
 
     # Ensure that each file path ends in a '/'
     game = os.path.normpath(game) + '/'
