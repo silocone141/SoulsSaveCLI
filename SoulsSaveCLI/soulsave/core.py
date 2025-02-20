@@ -311,10 +311,6 @@ def load(save_name, subdir):
 @click.argument('save_name', required=False)
 def rm(parent_dir, save_name):
 
-    ##################################
-    ## ADD ROBUST --HELP COMMAND!!  ##
-    ##################################
-
     """
     Deletes specified save file or subdirectory\n
     To delete an entire directory, do not enter a save name\n
