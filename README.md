@@ -21,7 +21,7 @@ This tool has only been tested with Steam, but it should work with other platfor
 ### Using pip
 
 ```
-pip install soulsave
+pip install soulsave-cli
 ```
 
 It is recommnded to install this tool in a virtual environment. This way, you can have multiple instances of the tool in different directories, each corresponding to a different game or run. For example, we'll say we would like to set up the tool to use on *Elden Ring*. Suppose we have a directory named `EldenRingRuns/` that we'd like to use as the root directory of our save states, execute:
@@ -39,7 +39,7 @@ source .venv/bin/activate
 Once done, execute:
 
 ```
-pip install soulsave
+pip install soulsave-cli
 ```
 
 

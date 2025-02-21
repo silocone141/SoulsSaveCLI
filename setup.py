@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='soulsave',
+    name='soulsave-cli',
     version='0.1.4',
     packages=find_packages(),
     long_description=
