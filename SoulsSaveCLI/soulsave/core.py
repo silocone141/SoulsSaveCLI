@@ -106,7 +106,10 @@ def list(subdir):
             click.echo(side_functions.list_files(full_path))
 
         else:
-            click.echo(f"Directory '{subdir}' does not exist in '{root}'\n Use 'soulsave list' to list available options")
+            click.echo(
+                f"Directory '{subdir}' does not exist in '{root}'\n"
+                "Use 'soulsave list' to list available options"
+            )
             quit()
 
     else:
@@ -245,11 +248,17 @@ def load(save_name, subdir):
         dest = config_data[0] + config_data[1]
 
         if not os.path.isfile(org):
-            click.echo(f"'{org}' does not exist. Use 'soulsave list' for a list of available options")
+            click.echo(
+                f"'{org}' does not exist. Use 'soulsave list' to list\n"
+                "available options"
+            )
             quit()
 
         elif not os.path.isfile(dest):
-            click.echo(f"'{dest}' does not exist. Please review the game save location in config.yaml or set the value with 'soulsave init'")
+            click.echo(
+                f"'{dest}' does not exist. Please review the game save location\n"
+                "in config.yaml or set the value with 'soulsave init'"
+            )
             quit()
 
         else:
@@ -374,7 +383,9 @@ def rm(parent_dir, save_name):
                     abort=True
                 )
                 os.remove(full_file_path)
-                click.echo(f"Successfully removed {parent_dir}/{save_name}{file_ext}")
+                click.echo(
+                    f"Successfully removed {parent_dir}/{save_name}{file_ext}"
+                )
     else:
         if not os.path.isdir(full_dir_path):
             click.echo(f"'{full_dir_path}' does not exist. Please try again or use "
