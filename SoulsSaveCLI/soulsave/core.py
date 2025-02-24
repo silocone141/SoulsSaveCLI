@@ -220,6 +220,7 @@ def add(save_name, subdir):
 
 @click.command()
 @click.option(
+    '-l',
     '--last',
     is_flag=True,
     callback=callbacks.load_last,
