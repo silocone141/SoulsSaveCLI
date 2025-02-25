@@ -440,10 +440,13 @@ def rm(parent_dir, save_name):
                 )
     else:
         if not os.path.isdir(full_dir_path):
-            click.echo(f"'{full_dir_path}' does not exist. Please try again or use "
+            click.echo(
+                f"'{full_dir_path}' does not exist. Please try again or use "
                 "'soulsave list' to review the contents of your save"
-                "state directory.")
+                "state directory."
+            )
         else:
+            click.echo(side_functions.list_files(full_dir_path, True))
             click.confirm(
                 f"Are you sure you want to delete {parent_dir}? "
                 "This will erase all of its contents!",
