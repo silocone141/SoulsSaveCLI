@@ -36,7 +36,7 @@ def load_unique(save_name, parent_dir):
     return target
 
 
-def list_files(dir):
+def list_files(dir, show_ext):
     # Remove trailing slash, if necessary
     norm_path = os.path.normpath(dir)
 
@@ -60,8 +60,11 @@ def list_files(dir):
                 string_list.append(line)
 
         else:
-            file_and_ext = os.path.splitext(files)
-            string_list.append(file_and_ext[0])
+            if show_ext:
+                string_list.append(files)
+            else:
+                file_and_ext = os.path.splitext(files)
+                string_list.append(file_and_ext[0])
 
     for i in range(1, len(string_list)):
         tree_chars = ['├──', '└──', '│']
