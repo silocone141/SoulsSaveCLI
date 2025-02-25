@@ -87,8 +87,15 @@ def init(game, save, states):
 
 
 @click.command()
+@click.option(
+    '-v',
+    '--verbose',
+    default=False,
+    is_flag=True,
+    help="Show file extensions"
+)
 @click.argument('subdir', required=False)
-def list(subdir):
+def list(subdir, verbose):
 
     """
     Lists files in specified save state subdirectory,
@@ -103,7 +110,7 @@ def list(subdir):
 
         # If the directory exists and is a child of SaveStates/
         if os.path.isdir(full_path) and subdir in os.listdir(root):
-            click.echo(side_functions.list_files(full_path))
+            click.echo(side_functions.list_files(full_path, verbose))
 
         else:
             click.echo(
@@ -113,7 +120,7 @@ def list(subdir):
             quit()
 
     else:
-        click.echo(side_functions.list_files(root))
+        click.echo(side_functions.list_files(root, verbose))
 
 
 @click.command()
