@@ -56,7 +56,7 @@ def list_files(dir, show_ext):
         if os.path.isdir(full_path):
             # Recursion: Append each line of the string given by function evaluated
             # at the subdirectory
-            for line in list_files(full_path).splitlines():
+            for line in list_files(full_path, show_ext).splitlines():
                 string_list.append(line)
 
         else:
