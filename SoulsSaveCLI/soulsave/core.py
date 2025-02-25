@@ -102,7 +102,16 @@ def list(subdir, verbose):
     or blank for all save state files
     """
 
-    config_data = side_functions.get_data('config.yaml')
+    try:
+        config_data = side_functions.get_data('config.yaml')
+
+    except (FileNotFoundError, KeyError, TypeError):
+        click.echo(
+            "File 'config.yaml' does not exist or was not created properly. "
+            "Use 'soulsave init' to create the file."
+        )
+        quit()
+
     root = config_data[2]
 
     if subdir:
@@ -127,9 +136,18 @@ def list(subdir, verbose):
 @click.argument('subdir')
 def new(subdir):
 
-    """Creates a new subdir in your save states folder"""
+    """Creates a new subdir in your save states directory"""
 
-    config_data = side_functions.get_data('config.yaml')
+    try:
+        config_data = side_functions.get_data('config.yaml')
+
+    except (FileNotFoundError, KeyError, TypeError):
+        click.echo(
+            "File 'config.yaml' does not exist or was not created properly. "
+            "Use 'soulsave init' to create the file."
+        )
+        quit()
+
     new_path = f'{config_data[2]}{subdir}/'
     new_real_path = os.path.realpath(f'{config_data[2]}{subdir}/')
     root_real_path = os.path.realpath(config_data[2])
@@ -160,7 +178,16 @@ def add(save_name, subdir):
     or just the save name to add directly into the save states directory
     """
 
-    config_data = side_functions.get_data('config.yaml')
+    try:
+        config_data = side_functions.get_data('config.yaml')
+
+    except (FileNotFoundError, KeyError, TypeError):
+        click.echo(
+            "File 'config.yaml' does not exist or was not created properly. "
+            "Use 'soulsave init' to create the file."
+        )
+        quit()
+
     file_data = os.path.splitext(config_data[1])
     file_ext = file_data[1]
 
@@ -207,7 +234,8 @@ def add(save_name, subdir):
             else:
                 full_path = config_data[2] + subdir
 
-            if not (os.path.isdir(full_path) and subdir in os.listdir(config_data[2])):
+            if not (os.path.isdir(full_path)
+                    and subdir in os.listdir(config_data[2])):
                 if subdir + '/' == config_data[2]:
                     pass
                 else:
@@ -244,8 +272,15 @@ def load(save_name, subdir):
     of save states directory
     """
 
-    # Extract data from config.yaml into a list
-    config_data = side_functions.get_data('config.yaml')
+    try:
+        config_data = side_functions.get_data('config.yaml')
+
+    except (FileNotFoundError, KeyError, TypeError):
+        click.echo(
+            "File 'config.yaml' does not exist or was not created properly. "
+            "Use 'soulsave init' to create the file."
+        )
+        quit()
 
     if subdir:
         # Get file extension of game save file
@@ -339,7 +374,16 @@ def rm(parent_dir, save_name):
     'SaveStates')
     """
 
-    config_data = side_functions.get_data('config.yaml')
+    try:
+        config_data = side_functions.get_data('config.yaml')
+
+    except (FileNotFoundError, KeyError, TypeError):
+        click.echo(
+            "File 'config.yaml' does not exist or was not created properly. "
+            "Use 'soulsave init' to create the file."
+        )
+        quit()
+
     file_data = os.path.splitext(config_data[1])
     file_ext = file_data[1]
 
