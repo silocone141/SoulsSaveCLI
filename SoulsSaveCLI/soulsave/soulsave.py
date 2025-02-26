@@ -12,3 +12,6 @@ cli.add_command(core.load)
 cli.add_command(core.list)
 cli.add_command(core.init)
 cli.add_command(core.rm)
+
+if __name__ == '__main__':
+    cli()
