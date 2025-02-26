@@ -35,5 +35,4 @@ def load_last(ctx, param, value):
             "File 'config.yaml' does not exist or was not created properly. "
             "Use 'soulsave init' to create the file."
         )
-        quit()
-
+        ctx.exit()
