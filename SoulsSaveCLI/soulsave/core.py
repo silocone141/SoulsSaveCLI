@@ -288,7 +288,6 @@ def load(save_name, subdir):
         quit()
 
     if subdir:
-        # Get file extension of game save file
         file_data = os.path.splitext(config_data[1])
         file_ext = file_data[1]
 
