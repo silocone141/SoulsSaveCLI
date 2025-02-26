@@ -28,7 +28,7 @@ from SoulsSaveCLI.utils import side_functions
 )
 def init(game, save, states):
 
-    """Initial setup, set key variables in config file"""
+    """Generate configuration file"""
 
     try:
         with open('config.yaml', 'r') as file:
@@ -98,8 +98,9 @@ def init(game, save, states):
 def list(subdir, verbose):
 
     """
-    Lists files in specified save state subdirectory,
-    or blank for all save state files
+    List files in save states directory\n
+    Use 'soulsave list SUBDIR' to list the files in the subdirectory SUBDIR\n
+    Execute 'soulsave list' for all files in save states directory
     """
 
     try:
@@ -136,7 +137,7 @@ def list(subdir, verbose):
 @click.argument('subdir')
 def new(subdir):
 
-    """Creates a new subdir in your save states directory"""
+    """Create a new subdirectory in your save states directory"""
 
     try:
         config_data = side_functions.get_data('config.yaml')
@@ -174,8 +175,9 @@ def new(subdir):
 def add(save_name, subdir):
 
     """
-    This script adds a savestate to the specified subdirectory
-    or just the save name to add directly into the save states directory
+    Create a save state\n
+    Add a savestate to the specified subdirectory or do not specify subdirectory
+    to add the save state to the root of the save states directory
     """
 
     try:
@@ -268,8 +270,11 @@ def add(save_name, subdir):
 def load(save_name, subdir):
 
     """
-    Loads the specified save file from the specified subdirectory
-    of save states directory
+    Load save state\n
+    Loads the specified save file from the specified subdirectory. If SAVE_NAME
+    is unique you can execute 'soulsave load SAVE_NAME' to load the save state.\n
+    If X is a unique substring of SAVE_NAME, you can also load the save state
+    with 'soulsave load X'
     """
 
     try:
@@ -328,7 +333,8 @@ def load(save_name, subdir):
                 click.echo(
                     f"{save_name} is a directory, not a save file name.\n"
                     "Use 'soulsave list' for a list of available options or use "
-                    "'soulsave --help' for more information on how to use the command"
+                    "'soulsave --help' for more information on how to use the "
+                    "command"
                 )
                 quit()
 
@@ -364,7 +370,7 @@ def load(save_name, subdir):
 def rm(parent_dir, save_name):
 
     """
-    Deletes specified save file or subdirectory\n
+    Delete specified save file or subdirectory\n
     To delete an entire directory, do not enter a save name\n
     To delete a single save file, provide its parent directory and the save file
     name\n
