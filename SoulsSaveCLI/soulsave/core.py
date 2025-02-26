@@ -8,82 +8,33 @@ from SoulsSaveCLI.utils import side_functions
 
 @click.command()
 @click.option(
-    '--game',
-    prompt=(
-        "Enter path to the directory that houses the game's save file "
-        "(directory only, not save file)"
-    ),
-    help="Path to game's save file directory"
-)
-@click.option(
     '--save',
-    prompt="Enter the name of the save file",
-    help="Name of game's save file"
+    prompt="Enter the path to the game's save file",
+    help="Path to game's save file",
+    type=click.Path(exists=True, resolve_path=True)
 )
 @click.option(
     '--states',
     prompt="Enter the location to store your save states",
     default="SaveStates/",
-    help="Path to directory to store save states"
+    help="Path to directory to store save states",
+    type=click.Path(exists=True, resolve_path=True)
 )
-def init(game, save, states):
+def init(save, states):
 
     """Generate configuration file"""
 
-    try:
-        with open('config.yaml', 'r') as file:
-            config_data = yaml.safe_load(file)
-
-    except FileNotFoundError:
-        with open('config.yaml', 'w'):
-            config_data = {
-                "last_loaded": "",
-                "save_file": "",
-                "save_location": "",
-                "save_states_dir": ""
-            }
-
-    # Ensure that each file path ends in a '/'
-    game = os.path.normpath(game) + '/'
+    config_data = side_functions.get_data_dict('config.yaml')
+    save_name = os.path.basename(save)
+    game = os.path.normpath(os.path.dirname(save)) + '/'
     states = os.path.normpath(states) + '/'
 
-    if not os.path.isdir(game):
-        click.echo(
-            f"Directory '{game}' does not exist. Please enter the path of the "
-            "directory that holds the game's save file."
-    )
+    config_data['save_location'] = game
+    config_data['save_file'] = save_name
+    config_data['save_states_dir'] = states
 
-    elif not os.path.isdir(states):
-        if states == "SaveStates/":
-            os.makedirs(states)
-            config_data['save_location'] = game
-            config_data['save_file'] = save
-            config_data['save_states_dir'] = states
-
-            with open('config.yaml', 'w') as file:
-                yaml.safe_dump(config_data, file)
-
-            click.echo("Successfully created file 'config.yaml'")
-
-        else:
-            click.echo(
-                f"Directory '{states}' does not exist. Please enter the path of "
-                "the directory to hold your save states, or leave blank for the "
-                "default location."
-        )
-
-    elif not os.path.isfile(game + save):
-        click.echo(f"'{game + save}' does not exist. Please try again.")
-
-    else:
-        config_data['save_location'] = game
-        config_data['save_file'] = save
-        config_data['save_states_dir'] = states
-
-        with open('config.yaml', 'w') as file:
-            yaml.safe_dump(config_data, file)
-
-        click.echo("Successfully created file 'config.yaml'")
+    side_functions.load_data('config.yaml', config_data)
+    click.echo("Successfully created file 'config.yaml'")
 
 
 @click.command()
@@ -270,15 +221,18 @@ def add(save_name, subdir):
 def load(save_name, subdir):
 
     """
-    Load save state\n
+    Load save state
+
     Loads the specified save file from the specified subdirectory. If SAVE_NAME
-    is unique you can execute 'soulsave load SAVE_NAME' to load the save state.\n
+    is unique you can execute 'soulsave load SAVE_NAME' to load the save state.
+
     If X is a unique substring of SAVE_NAME, you can also load the save state
     with 'soulsave load X'
     """
 
     try:
-        config_data = side_functions.get_data('config.yaml')
+        config_data = side_functions.get_data_dict('config.yaml')
+        config_data_list = side_functions.get_data('config.yaml')
 
     except (FileNotFoundError, KeyError, TypeError):
         click.echo(
@@ -288,11 +242,11 @@ def load(save_name, subdir):
         quit()
 
     if subdir:
-        file_data = os.path.splitext(config_data[1])
+        file_data = os.path.splitext(config_data_list[1])
         file_ext = file_data[1]
 
-        org = f"{config_data[2]}{subdir}/{save_name}{file_ext}"
-        dest = config_data[0] + config_data[1]
+        org = f"{config_data_list[2]}{subdir}/{save_name}{file_ext}"
+        dest = config_data_list[0] + config_data_list[1]
 
         if not os.path.isfile(org):
             click.echo(
@@ -311,21 +265,17 @@ def load(save_name, subdir):
         else:
             shutil.copyfile(org, dest)
 
-        with open('config.yaml', 'r') as file:
-            config_dict = yaml.safe_load(file)
-
-        config_dict["last_loaded"] = org
-        side_functions.load_data('config.yaml', config_dict)
-
-        click.echo(f"Successfully loaded {subdir}/{save_name}")
+            config_data["last_loaded"] = org
+            side_functions.load_data('config.yaml', config_data)
+            click.echo(f"Successfully loaded {org}")
 
     else:
-        test_unique = side_functions.load_unique(save_name, config_data[2])
+        test_unique = side_functions.load_unique(save_name, config_data_list[2])
 
         if test_unique[0]:
             save_name = test_unique[1]
             org = f"{save_name}"
-            dest = config_data[0] + config_data[1]
+            dest = config_data_list[0] + config_data_list[1]
 
 
             if not os.path.isfile(save_name):
@@ -340,14 +290,6 @@ def load(save_name, subdir):
             else:
                 shutil.copyfile(org, dest)
 
-            with open('config.yaml', 'r') as file:
-                config_dict = yaml.safe_load(file)
-
-            config_dict["last_loaded"] = org
-            side_functions.load_data('config.yaml', config_dict)
-
-            click.echo(f"Successfully loaded {test_unique[1]}")
-
         elif test_unique[1]:
             click.echo(
                 "Save name is not unique; please include the subdirectory "
@@ -361,6 +303,10 @@ def load(save_name, subdir):
                 "to check available save states"
             )
             quit()
+
+        config_data["last_loaded"] = org
+        side_functions.load_data('config.yaml', config_data)
+        click.echo(f"Successfully loaded {test_unique[1]}")
 
 
 @click.command()
