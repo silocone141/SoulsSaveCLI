@@ -12,6 +12,7 @@ setup(
     long_description_content_type="text/plain",
     url="https://github.com/silocone141/SoulsSaveCLI",
     author="silocone",
+    license="MIT",
     include_package_data=True,
     install_requires=[
         'Click',
