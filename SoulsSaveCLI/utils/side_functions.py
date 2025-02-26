@@ -4,19 +4,52 @@ import yaml
 
 
 def get_data(config):
-    with open(config, 'r') as file:
-        config_data = yaml.safe_load(file)
+    try:
+        with open(config, 'r') as file:
+            config_data = yaml.safe_load(file)
 
-    return [config_data['save_location'],
+        data_list = [
+            config_data['save_location'],
             config_data['save_file'],
             config_data['save_states_dir'],
             config_data['last_loaded']
-    ]
+        ]
+
+    except FileNotFoundError:
+        with open('config.yaml', 'w') as file:
+            config_data = {
+                "last_loaded": "",
+                "save_file": "",
+                "save_location": "",
+                "save_states_dir": ""
+            }
+            yaml.safe_dump(config_data, file)
+            data_list = ['', '', '', '']
+
+    return data_list
 
 
-def load_data(config, config_list):
+def get_data_dict(config):
+    try:
+        with open(config, 'r') as file:
+            config_data = yaml.safe_load(file)
+
+    except FileNotFoundError:
+        with open('config.yaml', 'w') as file:
+            config_data = {
+                "last_loaded": "",
+                "save_file": "",
+                "save_location": "",
+                "save_states_dir": ""
+            }
+            yaml.safe_dump(config_data, file)
+
+    return config_data
+
+
+def load_data(config, config_dict):
     with open(config, 'w') as file:
-        yaml.safe_dump(config_list, file)
+        yaml.safe_dump(config_dict, file)
 
 
 def load_unique(save_name, parent_dir):
