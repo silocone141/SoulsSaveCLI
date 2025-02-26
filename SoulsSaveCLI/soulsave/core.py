@@ -8,94 +8,62 @@ from SoulsSaveCLI.utils import side_functions
 
 @click.command()
 @click.option(
-    '--game',
-    prompt=(
-        "Enter path to the directory that houses the game's save file "
-        "(directory only, not save file)"
-    ),
-    help="Path to game's save file directory"
-)
-@click.option(
     '--save',
-    prompt="Enter the name of the save file",
-    help="Name of game's save file"
+    prompt="Enter the path to the game's save file",
+    help="Path to game's save file",
+    type=click.Path(exists=True, resolve_path=True)
 )
 @click.option(
     '--states',
     prompt="Enter the location to store your save states",
     default="SaveStates/",
-    help="Path to directory to store save states"
+    help="Path to directory to store save states",
+    type=click.Path(exists=True, resolve_path=True)
 )
-def init(game, save, states):
+def init(save, states):
 
-    """Initial setup, set key variables in config file"""
+    """Generate configuration file"""
 
-    try:
-        with open('config.yaml', 'r') as file:
-            config_data = yaml.safe_load(file)
-
-    except FileNotFoundError:
-        with open('config.yaml', 'w'):
-            config_data = {
-                "last_loaded": "",
-                "save_file": "",
-                "save_location": "",
-                "save_states_dir": ""
-            }
-
-    # Ensure that each file path ends in a '/'
-    game = os.path.normpath(game) + '/'
+    config_data = side_functions.get_data_dict('config.yaml')
+    save_name = os.path.basename(save)
+    game = os.path.normpath(os.path.dirname(save)) + '/'
     states = os.path.normpath(states) + '/'
 
-    if not os.path.isdir(game):
-        click.echo(
-            f"Directory '{game}' does not exist. Please enter the path of the "
-            "directory that holds the game's save file."
-    )
+    config_data['save_location'] = game
+    config_data['save_file'] = save_name
+    config_data['save_states_dir'] = states
 
-    elif not os.path.isdir(states):
-        if states == "SaveStates/":
-            os.makedirs(states)
-            config_data['save_location'] = game
-            config_data['save_file'] = save
-            config_data['save_states_dir'] = states
-
-            with open('config.yaml', 'w') as file:
-                yaml.safe_dump(config_data, file)
-
-            click.echo("Successfully created file 'config.yaml'")
-
-        else:
-            click.echo(
-                f"Directory '{states}' does not exist. Please enter the path of "
-                "the directory to hold your save states, or leave blank for the "
-                "default location."
-        )
-
-    elif not os.path.isfile(game + save):
-        click.echo(f"'{game + save}' does not exist. Please try again.")
-
-    else:
-        config_data['save_location'] = game
-        config_data['save_file'] = save
-        config_data['save_states_dir'] = states
-
-        with open('config.yaml', 'w') as file:
-            yaml.safe_dump(config_data, file)
-
-        click.echo("Successfully created file 'config.yaml'")
+    side_functions.load_data('config.yaml', config_data)
+    click.echo("Successfully created file 'config.yaml'")
 
 
 @click.command()
+@click.option(
+    '-v',
+    '--verbose',
+    default=False,
+    is_flag=True,
+    help="Show file extensions"
+)
 @click.argument('subdir', required=False)
-def list(subdir):
+def list(subdir, verbose):
 
     """
-    Lists files in specified save state subdirectory,
-    or blank for all save state files
+    List files in save states directory\n
+    Use 'soulsave list SUBDIR' to list the files in the subdirectory SUBDIR\n
+    Execute 'soulsave list' for all files in save states directory
     """
 
-    config_data = side_functions.get_data('config.yaml')
+    try:
+        config_data = side_functions.get_data('config.yaml')
+
+    except (FileNotFoundError, KeyError, TypeError):
+        click.echo(
+            "File 'config.yaml' does not exist or was not created properly. "
+            "Use 'soulsave init' to create the file."
+        )
+        quit()
+
     root = config_data[2]
 
     if subdir:
@@ -103,23 +71,35 @@ def list(subdir):
 
         # If the directory exists and is a child of SaveStates/
         if os.path.isdir(full_path) and subdir in os.listdir(root):
-            click.echo(side_functions.list_files(full_path))
+            click.echo(side_functions.list_files(full_path, verbose))
 
         else:
-            click.echo(f"Directory '{subdir}' does not exist in '{root}'\n Use 'soulsave list' to list available options")
+            click.echo(
+                f"Directory '{subdir}' does not exist in '{root}'\n"
+                "Use 'soulsave list' to list available options"
+            )
             quit()
 
     else:
-        click.echo(side_functions.list_files(root))
+        click.echo(side_functions.list_files(root, verbose))
 
 
 @click.command()
 @click.argument('subdir')
 def new(subdir):
 
-    """Creates a new subdir in your save states folder"""
+    """Create a new subdirectory in your save states directory"""
 
-    config_data = side_functions.get_data('config.yaml')
+    try:
+        config_data = side_functions.get_data('config.yaml')
+
+    except (FileNotFoundError, KeyError, TypeError):
+        click.echo(
+            "File 'config.yaml' does not exist or was not created properly. "
+            "Use 'soulsave init' to create the file."
+        )
+        quit()
+
     new_path = f'{config_data[2]}{subdir}/'
     new_real_path = os.path.realpath(f'{config_data[2]}{subdir}/')
     root_real_path = os.path.realpath(config_data[2])
@@ -146,11 +126,21 @@ def new(subdir):
 def add(save_name, subdir):
 
     """
-    This script adds a savestate to the specified subdirectory
-    or just the save name to add directly into the save states directory
+    Create a save state\n
+    Add a savestate to the specified subdirectory or do not specify subdirectory
+    to add the save state to the root of the save states directory
     """
 
-    config_data = side_functions.get_data('config.yaml')
+    try:
+        config_data = side_functions.get_data('config.yaml')
+
+    except (FileNotFoundError, KeyError, TypeError):
+        click.echo(
+            "File 'config.yaml' does not exist or was not created properly. "
+            "Use 'soulsave init' to create the file."
+        )
+        quit()
+
     file_data = os.path.splitext(config_data[1])
     file_ext = file_data[1]
 
@@ -197,7 +187,8 @@ def add(save_name, subdir):
             else:
                 full_path = config_data[2] + subdir
 
-            if not (os.path.isdir(full_path) and subdir in os.listdir(config_data[2])):
+            if not (os.path.isdir(full_path)
+                    and subdir in os.listdir(config_data[2])):
                 if subdir + '/' == config_data[2]:
                     pass
                 else:
@@ -217,6 +208,7 @@ def add(save_name, subdir):
 
 @click.command()
 @click.option(
+    '-l',
     '--last',
     is_flag=True,
     callback=callbacks.load_last,
@@ -229,67 +221,74 @@ def add(save_name, subdir):
 def load(save_name, subdir):
 
     """
-    Loads the specified save file from the specified subdirectory
-    of save states directory
+    Load save state
+
+    Loads the specified save file from the specified subdirectory. If SAVE_NAME
+    is unique you can execute 'soulsave load SAVE_NAME' to load the save state.
+
+    If X is a unique substring of SAVE_NAME, you can also load the save state
+    with 'soulsave load X'
     """
 
-    # Extract data from config.yaml into a list
-    config_data = side_functions.get_data('config.yaml')
+    try:
+        config_data = side_functions.get_data_dict('config.yaml')
+        config_data_list = side_functions.get_data('config.yaml')
+
+    except (FileNotFoundError, KeyError, TypeError):
+        click.echo(
+            "File 'config.yaml' does not exist or was not created properly. "
+            "Use 'soulsave init' to create the file."
+        )
+        quit()
 
     if subdir:
-        # Get file extension of game save file
-        file_data = os.path.splitext(config_data[1])
+        file_data = os.path.splitext(config_data_list[1])
         file_ext = file_data[1]
 
-        org = f"{config_data[2]}{subdir}/{save_name}{file_ext}"
-        dest = config_data[0] + config_data[1]
+        org = f"{config_data_list[2]}{subdir}/{save_name}{file_ext}"
+        dest = config_data_list[0] + config_data_list[1]
 
         if not os.path.isfile(org):
-            click.echo(f"'{org}' does not exist. Use 'soulsave list' for a list of available options")
+            click.echo(
+                f"'{org}' does not exist. Use 'soulsave list' to list\n"
+                "available options"
+            )
             quit()
 
         elif not os.path.isfile(dest):
-            click.echo(f"'{dest}' does not exist. Please review the game save location in config.yaml or set the value with 'soulsave init'")
+            click.echo(
+                f"'{dest}' does not exist. Please review the game save location\n"
+                "in config.yaml or set the value with 'soulsave init'"
+            )
             quit()
 
         else:
             shutil.copyfile(org, dest)
 
-        with open('config.yaml', 'r') as file:
-            config_dict = yaml.safe_load(file)
-
-        config_dict["last_loaded"] = org
-        side_functions.load_data('config.yaml', config_dict)
-
-        click.echo(f"Successfully loaded {subdir}/{save_name}")
+            config_data["last_loaded"] = org
+            side_functions.load_data('config.yaml', config_data)
+            click.echo(f"Successfully loaded {org}")
 
     else:
-        test_unique = side_functions.load_unique(save_name, config_data[2])
+        test_unique = side_functions.load_unique(save_name, config_data_list[2])
 
         if test_unique[0]:
             save_name = test_unique[1]
             org = f"{save_name}"
-            dest = config_data[0] + config_data[1]
+            dest = config_data_list[0] + config_data_list[1]
 
 
             if not os.path.isfile(save_name):
                 click.echo(
                     f"{save_name} is a directory, not a save file name.\n"
                     "Use 'soulsave list' for a list of available options or use "
-                    "'soulsave --help' for more information on how to use the command"
+                    "'soulsave --help' for more information on how to use the "
+                    "command"
                 )
                 quit()
 
             else:
                 shutil.copyfile(org, dest)
-
-            with open('config.yaml', 'r') as file:
-                config_dict = yaml.safe_load(file)
-
-            config_dict["last_loaded"] = org
-            side_functions.load_data('config.yaml', config_dict)
-
-            click.echo(f"Successfully loaded {test_unique[1]}")
 
         elif test_unique[1]:
             click.echo(
@@ -305,6 +304,10 @@ def load(save_name, subdir):
             )
             quit()
 
+        config_data["last_loaded"] = org
+        side_functions.load_data('config.yaml', config_data)
+        click.echo(f"Successfully loaded {test_unique[1]}")
+
 
 @click.command()
 @click.argument('parent_dir')
@@ -312,7 +315,7 @@ def load(save_name, subdir):
 def rm(parent_dir, save_name):
 
     """
-    Deletes specified save file or subdirectory\n
+    Delete specified save file or subdirectory\n
     To delete an entire directory, do not enter a save name\n
     To delete a single save file, provide its parent directory and the save file
     name\n
@@ -322,7 +325,16 @@ def rm(parent_dir, save_name):
     'SaveStates')
     """
 
-    config_data = side_functions.get_data('config.yaml')
+    try:
+        config_data = side_functions.get_data('config.yaml')
+
+    except (FileNotFoundError, KeyError, TypeError):
+        click.echo(
+            "File 'config.yaml' does not exist or was not created properly. "
+            "Use 'soulsave init' to create the file."
+        )
+        quit()
+
     file_data = os.path.splitext(config_data[1])
     file_ext = file_data[1]
 
@@ -374,13 +386,18 @@ def rm(parent_dir, save_name):
                     abort=True
                 )
                 os.remove(full_file_path)
-                click.echo(f"Successfully removed {parent_dir}/{save_name}{file_ext}")
+                click.echo(
+                    f"Successfully removed {parent_dir}/{save_name}{file_ext}"
+                )
     else:
         if not os.path.isdir(full_dir_path):
-            click.echo(f"'{full_dir_path}' does not exist. Please try again or use "
+            click.echo(
+                f"'{full_dir_path}' does not exist. Please try again or use "
                 "'soulsave list' to review the contents of your save"
-                "state directory.")
+                "state directory."
+            )
         else:
+            click.echo(side_functions.list_files(full_dir_path, True))
             click.confirm(
                 f"Are you sure you want to delete {parent_dir}? "
                 "This will erase all of its contents!",
