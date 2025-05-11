@@ -87,8 +87,6 @@ def list_files(dir, show_ext):
         full_path = f'{dir}/{files}'
 
         if os.path.isdir(full_path):
-            # Recursion: Append each line of the string given by function evaluated
-            # at the subdirectory
             for line in list_files(full_path, show_ext).splitlines():
                 string_list.append(line)
 
@@ -103,8 +101,6 @@ def list_files(dir, show_ext):
         tree_chars = ['├──', '└──', '│']
 
         if i != len(string_list) - 1:
-            # If the first 3 non-blank characters of the string are in tree_chars,
-            # add a vertical pipe
             if string_list[i].strip()[:3].strip() in tree_chars:
                 string_list[i] = f'│   {string_list[i]}'
 
