@@ -1,7 +1,6 @@
 import click
 import os
 import shutil
-import yaml
 from SoulsSaveCLI.utils import callbacks
 from SoulsSaveCLI.utils import side_functions
 
@@ -21,7 +20,6 @@ from SoulsSaveCLI.utils import side_functions
     type=click.Path(exists=True, resolve_path=True)
 )
 def init(save, states):
-
     """Generate configuration file"""
 
     config_data = side_functions.get_data_dict('config.yaml')
@@ -47,7 +45,6 @@ def init(save, states):
 )
 @click.argument('subdir', required=False)
 def list(subdir, verbose):
-
     """
     List files in save states directory\n
     Use 'soulsave list SUBDIR' to list the files in the subdirectory SUBDIR\n
@@ -87,7 +84,6 @@ def list(subdir, verbose):
 @click.command()
 @click.argument('subdir')
 def new(subdir):
-
     """Create a new subdirectory in your save states directory"""
 
     try:
@@ -124,11 +120,10 @@ def new(subdir):
 @click.argument('save_name')
 @click.argument('subdir', required=False)
 def add(save_name, subdir):
-
     """
     Create a save state\n
-    Add a savestate to the specified subdirectory or do not specify subdirectory
-    to add the save state to the root of the save states directory
+    Add a savestate to the specified subdirectory or do not specify
+    subdirectory to add the save state to the root of the save states directory
     """
 
     try:
@@ -160,8 +155,8 @@ def add(save_name, subdir):
             quit()
         else:
             click.echo(
-                f"'{config_data[2]}{save_name}' already exists! Please choose a "
-                "different name"
+                f"'{config_data[2]}{save_name}' already exists! Please choose "
+                "a different name"
             )
             quit()
 
@@ -193,8 +188,9 @@ def add(save_name, subdir):
                     pass
                 else:
                     click.echo(
-                        f"Directory '{subdir}' does not exist in {config_data[2]}.\n"
-                        "Use 'soulsave list' to list available options"
+                        f"Directory '{subdir}' does not exist in "
+                        f"{config_data[2]}.\n Use 'soulsave list' to list "
+                        "available options"
                     )
                     quit()
 
@@ -203,7 +199,9 @@ def add(save_name, subdir):
         if subdir:
             click.echo(f"Successfully created save '{subdir}/{save_name}'")
         else:
-            click.echo(f"Successfully created save '{config_data[2]}{save_name}'")
+            click.echo(
+                f"Successfully created save '{config_data[2]}{save_name}'"
+            )
 
 
 @click.command()
@@ -219,7 +217,6 @@ def add(save_name, subdir):
 @click.argument('save_name')
 @click.argument('subdir', required=False)
 def load(save_name, subdir):
-
     """
     Load save state
 
@@ -257,8 +254,9 @@ def load(save_name, subdir):
 
         elif not os.path.isfile(dest):
             click.echo(
-                f"'{dest}' does not exist. Please review the game save location\n"
-                "in config.yaml or set the value with 'soulsave init'"
+                f"'{dest}' does not exist. Please review the game save "
+                "location\n in config.yaml or set the value with "
+                "'soulsave init'"
             )
             quit()
 
@@ -270,20 +268,21 @@ def load(save_name, subdir):
             click.echo(f"Successfully loaded {org}")
 
     else:
-        test_unique = side_functions.load_unique(save_name, config_data_list[2])
+        test_unique = side_functions.load_unique(
+            save_name, config_data_list[2]
+        )
 
         if test_unique[0]:
             save_name = test_unique[1]
             org = f"{save_name}"
             dest = config_data_list[0] + config_data_list[1]
 
-
             if not os.path.isfile(save_name):
                 click.echo(
                     f"{save_name} is a directory, not a save file name.\n"
-                    "Use 'soulsave list' for a list of available options or use "
-                    "'soulsave --help' for more information on how to use the "
-                    "command"
+                    "Use 'soulsave list' for a list of available options or "
+                    "use 'soulsave --help' for more information on how to use "
+                    "the command"
                 )
                 quit()
 
@@ -299,8 +298,8 @@ def load(save_name, subdir):
 
         else:
             click.echo(
-                "Save name does not exist; please try again or use 'soulsave list' "
-                "to check available save states"
+                "Save name does not exist; please try again or use "
+                "'soulsave list' to check available save states"
             )
             quit()
 
@@ -313,14 +312,13 @@ def load(save_name, subdir):
 @click.argument('parent_dir')
 @click.argument('save_name', required=False)
 def rm(parent_dir, save_name):
-
     """
     Delete specified save file or subdirectory\n
     To delete an entire directory, do not enter a save name\n
-    To delete a single save file, provide its parent directory and the save file
-    name\n
-    To delete a single save file in the root directory, you may either enter the
-    path to the save states directory or use 'root' as an alias (if you are
+    To delete a single save file, provide its parent directory and the save
+    file name\n
+    To delete a single save file in the root directory, you may either enter
+    the path to the save states directory or use 'root' as an alias (if you are
     using the default save states directory 'SaveStates/', you can just type
     'SaveStates')
     """
@@ -347,13 +345,16 @@ def rm(parent_dir, save_name):
     else:
         full_path = config_data[2] + parent_dir
 
-    if not (os.path.isdir(full_path) and parent_dir in os.listdir(config_data[2])):
+    if not (os.path.isdir(full_path) and parent_dir in os.listdir(
+        config_data[2])
+    ):
         if parent_dir + '/' == config_data[2] and save_name:
             pass
         else:
             click.echo(
-                f"Directory '{parent_dir}' does not exist in {config_data[2]}.\n"
-                "Use 'soulsave list' to list available options"
+                f"Directory '{parent_dir}' does not exist in "
+                f"{config_data[2]}.\n Use 'soulsave list' to list available "
+                "options"
             )
             quit()
 
@@ -375,14 +376,18 @@ def rm(parent_dir, save_name):
         else:
             if parent_dir == config_data[2]:
                 click.confirm(
-                    f"Are you sure you want to delete {parent_dir}{save_name}?",
+                    "Are you sure you want to delete "
+                    f"{parent_dir}{save_name}?",
                     abort=True
                 )
                 os.remove(full_file_path)
-                click.echo(f"Successfully removed {parent_dir}{save_name}{file_ext}")
+                click.echo(
+                    f"Successfully removed {parent_dir}{save_name}{file_ext}"
+                )
             else:
                 click.confirm(
-                    f"Are you sure you want to delete {parent_dir}/{save_name}?",
+                    "Are you sure you want to delete "
+                    f"{parent_dir}/{save_name}?",
                     abort=True
                 )
                 os.remove(full_file_path)
