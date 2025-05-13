@@ -3,13 +3,10 @@ from setuptools import setup, find_packages
 
 setup(
     name='soulsave-cli',
-    version='0.1.5',
+    version='0.1.6',
     packages=find_packages(),
-    long_description=
-    """
-    A CLI tool designed to manage save files for the FromSoftware Souls series. Can be made to work with some other games as well.
-    """,
-    long_description_content_type="text/plain",
+    long_description=open('README.md').read(),
+    long_description_content_type="text/markdown",
     url="https://github.com/silocone141/SoulsSaveCLI",
     author="silocone",
     license="MIT",
