@@ -2,9 +2,13 @@ import click
 from SoulsSaveCLI.soulsave import core
 
 
-@click.group()
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+
+
+@click.group(no_args_is_help=True, context_settings=CONTEXT_SETTINGS)
 def cli():
     pass
+
 
 cli.add_command(core.new)
 cli.add_command(core.add)
