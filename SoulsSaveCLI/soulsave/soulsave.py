@@ -6,6 +6,7 @@ from SoulsSaveCLI.soulsave import core
 def cli():
     pass
 
+
 cli.add_command(core.new)
 cli.add_command(core.add)
 cli.add_command(core.load)
