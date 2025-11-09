@@ -7,11 +7,11 @@ from src.utils import fetch
 
 @click.command()
 @click.argument("game", type=str)
-@click.option("--save-dir",
-              "save_dir",
-              type=click.Path(exists=True, file_okay=False, resolve_path=True),
-              prompt="Enter the path to the game's save file directory")
-def new(game, save_dir):
+@click.option("--save-file",
+              "save_file",
+              type=click.Path(exists=True, dir_okay=False, resolve_path=True),
+              prompt="Enter the path to the game's save file")
+def new(game, save_file):
     """
     Create a new game profile
     """
@@ -26,16 +26,17 @@ def new(game, save_dir):
     except FileNotFoundError:
         click.echo(
             "Config file not found. Please run 'soulsave init' to create the "
-            "file")
-        quit()
+            "file.")
+        return
 
     try:
         os.makedirs(profile_dir)
 
     except FileExistsError:
         click.echo(f"A profile with name {game} already exists.")
+        return
 
-    config_data["profiles"].update({f"{game}": save_dir})
+    config_data["profiles"].update({f"{game}": save_file})
     fetch.write_data(config_file, config_data)
 
     click.echo(f"Successfully created profile '{game}'")
