@@ -18,9 +18,10 @@ def write_data(file_path, data):
 
 
 def get_config_dir():
-    config_dir = os.getenv("XDG_CONFIG_HOME", os.getenv("HOME") + "/.config")
+    config_dir = os.getenv("XDG_CONFIG_HOME",
+                           os.path.join(os.getenv("HOME"), ".config"))
 
-    return config_dir + "/soulsave"
+    return os.path.join(config_dir, "soulsave")
 
 
 def get_config_file():
