@@ -1,5 +1,5 @@
 import click
-from src.commands import new, init
+from src.commands import new, init, add
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
@@ -11,6 +11,7 @@ def cli():
 
 cli.add_command(new.new)
 cli.add_command(init.init)
+cli.add_command(add.add)
 
 if __name__ == "__main__":
     cli()
