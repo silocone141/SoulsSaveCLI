@@ -6,8 +6,16 @@ from src.utils import direct, fetch
 
 @click.command()
 @click.argument("profile", type=str, required=False)
-@click.option("--no-tree", "no_tree", is_flag=True, required=False)
-@click.option("--profiles", "list_profiles", is_flag=True, required=False)
+@click.option("--no-tree",
+              "no_tree",
+              is_flag=True,
+              required=False,
+              help="Do not use GNU tree")
+@click.option("--profiles",
+              "list_profiles",
+              is_flag=True,
+              required=False,
+              help="List only profile names")
 def list(profile, no_tree, list_profiles):
     """
     List save states or profiles
@@ -45,7 +53,7 @@ def list(profile, no_tree, list_profiles):
         profile = save_state_path
 
     else:
-        if profile not in config_data["profiles"]:
+        if profile not in game_profiles:
             click.echo(
                 f"'{profile}' does not exist. Use "
                 "'soulsave list --profiles' to list available profiles.")
