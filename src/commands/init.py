@@ -8,7 +8,7 @@ from src.utils import fetch
               "save_states_dir",
               type=click.Path(exists=True, file_okay=False, resolve_path=True),
               required=True,
-              prompt=True)
+              prompt="Enter the path to the directory to store save states")
 def init(save_states_dir):
     """
     Generate the configuration file
