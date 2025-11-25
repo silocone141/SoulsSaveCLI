@@ -8,6 +8,7 @@ from src.utils import fetch
 @click.command()
 @click.argument("profile", type=str)
 @click.option("--save-file",
+              "-s",
               "save_file",
               type=click.Path(exists=True, dir_okay=False, resolve_path=True),
               prompt="Enter the path to the game's save file")
