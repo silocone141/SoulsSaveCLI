@@ -35,8 +35,8 @@ def add(profile, name):
             "profiles")
         return
 
-    save_file_ext = os.path.splitext(game_path)
-    save_state_file_name = name + save_file_ext[1]
+    save_file_ext = os.path.splitext(game_path)[1]
+    save_state_file_name = name + save_file_ext
     save_state_file_path = os.path.join(save_state_path, profile,
                                         save_state_file_name)
 
