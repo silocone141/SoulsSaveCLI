@@ -75,7 +75,7 @@ def trash(profile, save_state, dry_run, yes):
 
     else:
         profile_path = os.path.join(save_state_path, profile)
-        staged_files = glob.glob(f"{profile_path}/*", recursive=True)
+        staged_files = glob.glob(f"{profile_path}/**", recursive=True)
         deletions.append(profile_path)
 
     if dry_run:
