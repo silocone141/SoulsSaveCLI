@@ -1,5 +1,5 @@
 import click
-from src.commands import new, init, add, list, load
+from src.commands import add, init, list, load, new, trash
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
@@ -9,11 +9,12 @@ def cli():
     pass
 
 
-cli.add_command(new.new)
-cli.add_command(init.init)
 cli.add_command(add.add)
+cli.add_command(init.init)
 cli.add_command(list.list)
 cli.add_command(load.load)
+cli.add_command(new.new)
+cli.add_command(trash.trash)
 
 if __name__ == "__main__":
     cli()
