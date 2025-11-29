@@ -29,9 +29,6 @@ def trash(profile, save_state, dry_run, yes):
 
     config_file = fetch.get_config_file()
     config_data = fetch.get_data(config_file)
-    # Put all files to be deleted inside the list below
-    # Use this list for the `--dry-run` output then
-    # Call `send2trash.send2trash(['file1', 'file2', ... ])`
     deletions = []
     staged_files = []
 
@@ -96,3 +93,5 @@ def trash(profile, save_state, dry_run, yes):
                 f"Action will move {len(staged_files)} file(s) to the "
                 "system trash. Proceed?"):
             send2trash.send2trash(deletions)
+            click.echo(
+                f"Moved {len(staged_files)} file(s) to the system trash.")
