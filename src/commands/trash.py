@@ -64,9 +64,8 @@ def trash(profile, save_state, dry_run, yes):
         save_file = os.path.join(save_state_path, profile,
                                  f"{save_state + save_extension}")
         if not os.path.isfile(save_file):
-            click.echo(
-                f"'{save_state}' does not exist. Run 'soulsave list {profile}' "
-                "to see available options")
+            click.echo(f"'{save_state}' does not exist. Run "
+                       f"'soulsave list {profile}' to see available options")
             return
 
         else:
