@@ -1,17 +1,24 @@
 import os
-
 import click
-
 from src.utils import fetch
 
 
 @click.command()
-@click.argument("profile", type=str)
-@click.option("--save-file",
-              "-s",
-              "save_file",
-              type=click.Path(exists=True, dir_okay=False, resolve_path=True),
-              prompt="Enter the path to the game's save file")
+@click.option(
+    "--profile",
+    "-p",
+    "profile",
+    type=str,
+    prompt="Profile Name",
+    required=True
+)
+@click.option(
+    "--save-file",
+    "-s",
+    "save_file",
+    type=click.Path(exists=True, dir_okay=False, resolve_path=True),
+    prompt="Enter the path to the game's save file",
+)
 def new(profile, save_file):
     """
     Create a new game profile
@@ -27,7 +34,8 @@ def new(profile, save_file):
     except FileNotFoundError:
         click.echo(
             "Config file not found. Please run 'soulsave init' to create the "
-            "file.")
+            "file"
+        )
         return
 
     try:
