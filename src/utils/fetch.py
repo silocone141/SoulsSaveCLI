@@ -17,12 +17,8 @@ def write_data(file_path, data):
         json.dump(data, file, indent=4)
 
 
-def get_config_dir():
+def get_config_file():
     config_dir = os.getenv("XDG_CONFIG_HOME",
                            os.path.join(os.getenv("HOME"), ".config"))
 
-    return os.path.join(config_dir, "soulsave")
-
-
-def get_config_file():
-    return os.path.join(get_config_dir(), "config.json")
+    return os.path.join(config_dir, "soulsave/config.json")
