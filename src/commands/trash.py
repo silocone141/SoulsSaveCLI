@@ -6,21 +6,13 @@ from src.utils import fetch
 
 
 @click.command()
-@click.argument("profile", type=str, required=True)
-@click.option("--save-state",
-              "-s",
-              "save_state",
-              type=str,
-              required=False,
+@click.option("--profile", "-p", "profile", type=str, required=True,
               prompt=False)
-@click.option("--dry-run",
-              "dry_run",
-              is_flag=True,
+@click.option("--save-state", "-s", "save_state", type=str, required=False,
+              prompt=False)
+@click.option("--dry-run", "dry_run", is_flag=True,
               help="Show what would be deleted")
-@click.option("--yes",
-              "-y",
-              "yes",
-              is_flag=True,
+@click.option("--yes", "-y", "yes", is_flag=True,
               help="Do not ask for confirmation")
 def trash(profile, save_state, dry_run, yes):
     """
@@ -59,12 +51,16 @@ def trash(profile, save_state, dry_run, yes):
 
     if save_state:
         save_file = os.path.join(save_state_path, profile,
-                                 f"{save_state + save_extension}")
-        if not os.path.isfile(save_file):
-            click.echo(f"'{save_state}' does not exist. Run "
-                       f"'soulsave list {profile}' to see available options")
-            return
+                                 f"{save_state}")
 
+        if not os.path.isfile(save_file):
+            save_file = os.path.join(save_state_path, profile,
+                                     f"{save_state + save_extension}")
+            if not os.path.isfile(save_file):
+                click.echo(f"'{save_state}' does not exist. Run "
+                           f"'soulsave list {profile}' to see available "
+                           "options")
+                return
         else:
             staged_files.append(save_file)
             deletions.append(save_file)
