@@ -5,8 +5,9 @@ from src.utils import fetch
 
 
 @click.command()
-@click.option("--profile", "profile", type=str, required=True, prompt=True)
-@click.option("--name", "name", type=str, required=True, prompt=True)
+@click.option("--profile", "-p", "profile", type=str, required=True,
+              prompt=True)
+@click.option("--name", "-n", "name", type=str, required=True, prompt=True)
 def add(profile, name):
     """
     Add a save state to an existing profile
