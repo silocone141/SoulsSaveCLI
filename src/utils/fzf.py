@@ -18,7 +18,7 @@ def select_profile(profiles):
             # Binds
             "--bind=tab:down,btab:up,"
             "ctrl-n:execute(soulsave new)+reload(soulsave list --profiles),"
-            "ctrl-d:execute(soulsave trash -p {})+"
+            "ctrl-d:execute(soulsave trash -p '{}')+"
             "reload(soulsave list --profiles),"
             "ctrl-z:ignore,double-click:ignore"
         ],
@@ -44,12 +44,12 @@ def save_states(profile, profile_path):
             "\nesc: Quit\n\n",
             # Binds
             "--bind=tab:down,btab:up,"
-            f"ctrl-a:execute(soulsave add -p {profile})+"
+            f"ctrl-a:execute(soulsave add -p '{profile}')+"
             "reload(find * -type f),"
-            f"ctrl-d:execute(soulsave trash -p {profile} "
-            "-s {})+reload(find * -type f),ctrl-z:ignore,"
-            f"enter:execute(soulsave load -p {profile} "
-            "-n {}),"
+            f"ctrl-d:execute(soulsave trash -p '{profile}' "
+            "-s '{}')+reload(find * -type f),ctrl-z:ignore,"
+            f"enter:execute(soulsave load -p '{profile}' "
+            "-n '{}'),"
             "double-click:ignore",
         ],
         cwd=profile_path,
