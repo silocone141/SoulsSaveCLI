@@ -22,3 +22,16 @@ def get_config_file():
                            os.path.join(os.getenv("HOME"), ".config"))
 
     return os.path.join(config_dir, "soulsave/config.json")
+
+
+def resolve_save(profile, path, save, extension):
+    save_file = os.path.join(path, profile,
+                             f"{save}")
+
+    if not os.path.isfile(save_file):
+        save_file = os.path.join(path, profile,
+                                 f"{save + extension}")
+        if not os.path.isfile(save_file):
+            return
+
+    return save_file
