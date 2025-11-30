@@ -40,10 +40,14 @@ def load(profile, name):
             "profiles")
         return
 
-    save_file_ext = os.path.splitext(game_save_path)
-    save_state_file_name = name + save_file_ext[1]
-    save_state_file_path = os.path.join(save_state_path, profile,
-                                        save_state_file_name)
+    save_extension = os.path.splitext(game_save_path)[1]
+    save_state_path = fetch.resolve_save(profile, save_state_path, name,
+                                         save_extension)
 
-    shutil.copyfile(save_state_file_path, game_save_path)
+    if save_state_path is None:
+        click.echo(
+            f"'{name}'.{save_extension} does not exist. Use "
+            "'soulsave list -p {profile}' to see available options")
+
+    shutil.copyfile(save_state_path, game_save_path)
     click.echo(f"Successfully loaded {profile}/{name}")
