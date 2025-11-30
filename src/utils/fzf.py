@@ -12,12 +12,14 @@ def select_profile(profiles):
             "--margin=1",
             "--padding=1",
             # Headings
-            "--header=ctrl-n: New profile \tctrl-d: Delete profile"
-            "\nctrl-r: Rename profile\nesc: Quit",
+            "--header=ctrl-n: New profile \t\tctrl-d: Delete profile"
+            "\nctrl-r: Rename profile \t\tenter: Select profile\n"
+            "esc: Quit\n\n",
             # Binds
             "--bind=tab:down,btab:up,"
-            "ctrl-n:execute(soulsave new),"
-            "ctrl-d:execute(soulsave trash -p {}),"
+            "ctrl-n:execute(soulsave new)+reload(soulsave list --profiles),"
+            "ctrl-d:execute(soulsave trash -p {})+"
+            "reload(soulsave list --profiles),"
             "ctrl-z:ignore,double-click:ignore"
         ],
         input="\n".join(profiles),
@@ -37,9 +39,9 @@ def save_states(profile, profile_path):
             "--margin=1",
             "--padding=1",
             # Headings
-            "--header=ctrl-a: New save state \tctrl-d: "
-            "Delete save state"
-            "\nctrl-r: Rename save state\tenter: Load save state\nesc: Quit",
+            "--header=ctrl-a: Add save state    \t\tctrl-d: Delete save state"
+            "\nctrl-r: Rename save state \t\tenter: Load save state"
+            "\nesc: Quit\n\n",
             # Binds
             "--bind=tab:down,btab:up,"
             f"ctrl-a:execute(soulsave add -p {profile})+"
