@@ -12,7 +12,7 @@ def ui(profile):
     """
 
     if shutil.which("fzf") is None:
-        click.echo("Interactive mode requires `fzf` to be installed.")
+        click.echo("Interactive mode requires fzf to be installed.")
         return
 
     config_file = fetch.get_config_file()
