@@ -29,12 +29,13 @@ def new(profile, save_file):
     try:
         config_data = fetch.get_data(config_file)
         profile_dir = os.path.join(config_data["save_states"], profile)
+        profiles = list(config_data["profiles"].keys())
 
-    # Add key error for profile_dir here too
-    except FileNotFoundError:
+    except KeyError:
         click.echo(
-            "Config file not found. Please run 'soulsave init' to create the "
-            "file"
+            "Error reading configuration file. Please review your "
+            "configuration or run 'soulsave init' to properly generate "
+            "the file."
         )
         return
 
@@ -42,10 +43,18 @@ def new(profile, save_file):
         os.makedirs(profile_dir)
 
     except FileExistsError:
-        click.echo(f"A profile with name {profile} already exists.")
-        return
+        if profile in profiles:
+            click.echo(f"A profile with name {profile} already exists.")
+            return
 
-    config_data["profiles"].update({f"{profile}": save_file})
-    fetch.write_data(config_file, config_data)
+        else:
+            config_data["profiles"].update({f"{profile}": save_file})
+            fetch.write_data(config_file, config_data)
 
-    click.echo(f"Successfully created profile '{profile}'")
+            click.echo(f"Successfully created profile '{profile}'")
+
+    else:
+        config_data["profiles"].update({f"{profile}": save_file})
+        fetch.write_data(config_file, config_data)
+
+        click.echo(f"Successfully created profile '{profile}'")
