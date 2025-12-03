@@ -44,8 +44,4 @@ def ui(profile):
             fzf.save_states(profile, profile_path)
 
     else:
-        selected_profile = fzf.select_profile(profiles)
-
-        if selected_profile != '':
-            profile_path = os.path.join(save_state_path, selected_profile)
-            fzf.save_states(selected_profile, profile_path)
+        fzf.select_profile(profiles)
