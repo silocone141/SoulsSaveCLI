@@ -19,6 +19,14 @@ def init():
     if write_file:
         save_states_dir = click.prompt("Enter the path to the directory to "
                                        "store save states")
+
+        if not os.path.isdir(save_states_dir):
+            try:
+                os.makedirs(save_states_dir)
+
+            except OSError:
+                raise OSError(f"Failed to create '{save_states_dir}'")
+
         file_content = {"save_states": save_states_dir, "profiles": {}}
         fetch.write_data(config_file, file_content)
         click.echo(f"Successfully created configuration file: {config_file}")
