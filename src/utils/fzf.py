@@ -17,9 +17,10 @@ def select_profile(profiles):
             "esc: Quit\n\n",
             # Binds
             "--bind=tab:down,btab:up,"
-            "ctrl-n:execute(soulsave new)+reload(soulsave list --profiles),"
-            "ctrl-d:execute(soulsave trash -p '{}')+"
-            "reload(soulsave list --profiles),"
+            "ctrl-n:execute(soulsave new)+become(soulsave ui),"
+            "ctrl-d:execute(soulsave trash -p {})+"
+            "become(soulsave ui),"
+            "enter:become(soulsave ui -p {}),"
             "ctrl-z:ignore,double-click:ignore"
         ],
         input="\n".join(profiles),
@@ -40,16 +41,18 @@ def save_states(profile, profile_path):
             "--padding=1",
             # Headings
             "--header=ctrl-a: Add save state    \t\tctrl-d: Delete save state"
-            "\nctrl-r: Rename save state \t\tenter: Load save state"
-            "\nesc: Quit\n\n",
+            "\nctrl-r: Rename save state \t\tctrl-p: Change Profile"
+            "\nenter: Load save state\t\t\tesc: Quit\n\n",
             # Binds
             "--bind=tab:down,btab:up,"
             f"ctrl-a:execute(soulsave add -p '{profile}')+"
-            "reload(find * -type f),"
+            f"become(soulsave ui -p {profile}),"
             f"ctrl-d:execute(soulsave trash -p '{profile}' "
-            "-s '{}')+reload(find * -type f),ctrl-z:ignore,"
+            "-s {})+" + f"become(soulsave ui -p {profile}),"
+            f"ctrl-p:become(soulsave ui),"
+            "ctrl-z:ignore,"
             f"enter:execute(soulsave load -p '{profile}' "
-            "-n '{}'),"
+            "-n {}),"
             "double-click:ignore",
         ],
         cwd=profile_path,
