@@ -4,18 +4,12 @@ from src.utils import fetch
 
 
 @click.command()
-@click.option("--save-states-dir",
-              "save_states_dir",
-              type=click.Path(exists=True, file_okay=False, resolve_path=True),
-              required=True,
-              prompt="Enter the path to the directory to store save states")
-def init(save_states_dir):
+def init():
     """
     Generate the configuration file
     """
 
     config_file = fetch.get_config_file()
-    file_content = {"save_states": save_states_dir, "profiles": {}}
     write_file = True
 
     if os.path.isfile(config_file):
@@ -23,4 +17,8 @@ def init(save_states_dir):
             "A config file already exists. Overwrite existing?")
 
     if write_file:
+        save_states_dir = click.prompt("Enter the path to the directory to "
+                                       "store save states")
+        file_content = {"save_states": save_states_dir, "profiles": {}}
         fetch.write_data(config_file, file_content)
+        click.echo(f"Successfully created configuration file: {config_file}")
