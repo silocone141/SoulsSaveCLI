@@ -2,7 +2,7 @@ import subprocess
 
 
 def select_profile(profiles):
-    return subprocess.run(
+    subprocess.run(
         [
             "fzf",
             # Layout
@@ -26,7 +26,7 @@ def select_profile(profiles):
         input="\n".join(profiles),
         text=True,
         capture_output=True,
-    ).stdout.strip()
+    )
 
 
 def save_states(profile, profile_path):
