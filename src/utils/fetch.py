@@ -9,7 +9,8 @@ def get_data(file_path):
         return config_data
 
     except FileNotFoundError:
-        return {}
+        raise FileNotFoundError("Config file does not exist. Run 'soulsave "
+                                "init' to generate the file")
 
 
 def write_data(file_path, data):
