@@ -1,6 +1,7 @@
 import click
-import shutil
-from src.commands import add, init, list, load, new, trash, ui
+import os
+from src.commands import add, init, list, load, new, rename, trash, ui
+from src.utils import fetch
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
@@ -9,9 +10,22 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 @click.option("--profile", "-p", "profile", type=str)
 @click.pass_context
 def cli(ctx, profile):
+    """
+    A save file manager designed for FromSoftware's games
+
+    If a valid configuration file exists, forwards to
+    'soulsave ui'. Else, prompts to create the configuration
+    file and prints help message.
+    """
+
     if ctx.invoked_subcommand is None:
-        if shutil.which("fzf") is None:
-            click.echo(ctx.get_help())
+        if not os.path.isfile(fetch.get_config_file()):
+            click.echo(ctx.get_help() + "\n\n")
+
+            if click.confirm("Configuration file does not exist. Would you "
+                             "like to generate it?"):
+                ctx.invoke(init.init)
+
         else:
             ctx.forward(ui.ui)
 
@@ -21,6 +35,7 @@ cli.add_command(init.init)
 cli.add_command(list.list)
 cli.add_command(load.load)
 cli.add_command(new.new)
+cli.add_command(rename.rename)
 cli.add_command(trash.trash)
 cli.add_command(ui.ui)
 
