@@ -17,7 +17,7 @@ def init():
             "A config file already exists. Overwrite existing?")
 
     if write_file:
-        save_states_dir = click.prompt("Enter the path to the directory to "
+        save_states_dir = click.prompt("Enter a path to a directory to "
                                        "store save states")
 
         if not os.path.isdir(save_states_dir):
