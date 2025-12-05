@@ -9,7 +9,8 @@ def try_rename(old_path, new_path):
         click.echo("Rename succeeded.")
 
     except OSError:
-        click.echo("New name is invalid. Rename operation was not successful.")
+        raise OSError("New name is invalid. Rename operation was not "
+                      "successful.")
 
 
 @click.command()
