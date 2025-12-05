@@ -20,7 +20,7 @@ def trash(profile, save_state, dry_run, yes):
     """
 
     config_values = fetch.get_config_values(profile)
-    save_state_path = config_values["save_state_path"]
+    save_state_path = config_values["save_states"]
     save_extension = os.path.splitext(config_values["profiles"][profile])[1]
 
     deletions = []

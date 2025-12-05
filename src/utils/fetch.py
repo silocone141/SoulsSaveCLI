@@ -69,7 +69,7 @@ def get_config_values(profile=None):
         raise InvalidSaveStatePath("Configuration option 'save_states' "
                                    "must be a valid directory")
     else:
-        return {"save_state_path": save_state_path, "profiles": profiles}
+        return {"save_states": save_state_path, "profiles": profiles}
 
 
 def resolve_save(profile, path, save, extension):

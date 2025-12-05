@@ -14,7 +14,7 @@ def add(profile, name):
     """
 
     config_values = fetch.get_config_values(profile)
-    save_state_path = config_values["save_state_path"]
+    save_state_path = config_values["save_states"]
     game_path = config_values["profiles"][profile]
 
     save_file_ext = os.path.splitext(game_path)[1]
