@@ -20,6 +20,7 @@ def select_profile(profiles):
             "ctrl-n:execute(soulsave new)+become(soulsave ui),"
             "ctrl-d:execute(soulsave trash -p {})+"
             "become(soulsave ui),"
+            "ctrl-r:execute(soulsave rename -p {})+become(soulsave ui),"
             "enter:become(soulsave ui -p {}),"
             "ctrl-z:ignore,double-click:ignore"
         ],
@@ -50,6 +51,8 @@ def save_states(profile, profile_path):
             f"ctrl-d:execute(soulsave trash -p '{profile}' "
             "-s {})+" + f"become(soulsave ui -p {profile}),"
             f"ctrl-p:become(soulsave ui),"
+            f"ctrl-r:execute(soulsave rename -p {profile} -s "
+            "{})+" + f"become(soulsave ui -p {profile}),"
             "ctrl-z:ignore,"
             f"enter:execute(soulsave load -p '{profile}' "
             "-n {}),"
