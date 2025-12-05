@@ -24,7 +24,7 @@ def select_profile(profiles):
             "enter:become(soulsave ui -p {}),"
             "ctrl-z:ignore,double-click:ignore"
         ],
-        input="\n".join(profiles),
+        input="\n".join(sorted(profiles)),
         text=True,
         capture_output=True,
     )
