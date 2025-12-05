@@ -9,12 +9,10 @@ from src.utils import direct, fetch
 @click.option("--no-tree",
               "no_tree",
               is_flag=True,
-              required=False,
               help="Do not use GNU tree")
 @click.option("--profiles",
               "list_profiles",
               is_flag=True,
-              required=False,
               help="List only profile names")
 def list(profile, no_tree, list_profiles):
     """
@@ -23,25 +21,9 @@ def list(profile, no_tree, list_profiles):
     Uses GNU tree if available, otherwise lists files in each directory
     """
 
-    config_file = fetch.get_config_file()
-    config_data = fetch.get_data(config_file)
-
-    try:
-        save_state_path = config_data["save_states"]
-        game_profiles = config_data["profiles"].keys()
-
-        if not os.path.isdir(save_state_path):
-            click.echo(f"'{save_state_path}' is not a directory. Please "
-                       "review your configuration file or run 'soulsave init'"
-                       "to properly generate the file.")
-            return
-
-    except KeyError:
-        click.echo(
-            "Error reading configuration file. Please review your "
-            "configuration or run 'soulsave init' to properly generate the "
-            "file.")
-        return
+    config_values = fetch.get_config_values(profile)
+    save_state_path = config_values["save_state_path"]
+    game_profiles = config_values["profiles"].keys()
 
     if list_profiles:
         for prof in game_profiles:

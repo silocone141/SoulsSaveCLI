@@ -19,35 +19,12 @@ def trash(profile, save_state, dry_run, yes):
     Delete a profile or save-state (sends files to system trash)
     """
 
-    config_file = fetch.get_config_file()
-    config_data = fetch.get_data(config_file)
+    config_values = fetch.get_config_values(profile)
+    save_state_path = config_values["save_state_path"]
+    save_extension = os.path.splitext(config_values["profiles"][profile])[1]
+
     deletions = []
     staged_files = []
-
-    try:
-        save_state_path = config_data["save_states"]
-
-        if not os.path.isdir(save_state_path):
-            click.echo(f"'{save_state_path}' is not a directory. Please "
-                       "review your configuration file or run 'soulsave init'"
-                       "to properly generate the file.")
-            return
-
-    except KeyError:
-        click.echo(
-            "Error reading configuration file. Please review your "
-            "configuration or run 'soulsave init' to properly generate the "
-            "file.")
-        return
-
-    try:
-        save_extension = os.path.splitext(config_data["profiles"][profile])[1]
-
-    except KeyError:
-        click.echo(
-            f"'{profile}' does not exist. Run 'soulsave list --profiles' to "
-            "view available profiles")
-        return
 
     if save_state:
         save_file = fetch.resolve_save(profile, save_state_path, save_state,

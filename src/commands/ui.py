@@ -15,33 +15,13 @@ def ui(profile):
         click.echo("Interactive mode requires fzf to be installed.")
         return
 
-    config_file = fetch.get_config_file()
-    config_data = fetch.get_data(config_file)
-
-    try:
-        save_state_path = config_data["save_states"]
-        profiles = list(config_data["profiles"].keys())
-
-    except KeyError:
-        click.echo(
-            "Error reading configuration file. Please review your "
-            "configuration or run 'soulsave init' to properly generate "
-            "the file."
-        )
-        return
+    config_values = fetch.get_config_values(profile)
+    save_state_path = config_values["save_state_path"]
+    profiles = list(config_values["profiles"].keys())
 
     if profile:
         profile_path = os.path.join(save_state_path, profile)
-
-        if profile not in profiles:
-            click.echo(
-                f"Profile '{profile}' does not exist. Use "
-                "'soulsave list --profiles' to see available options."
-            )
-            return
-
-        else:
-            fzf.save_states(profile, profile_path)
+        fzf.save_states(profile, profile_path)
 
     else:
         fzf.select_profile(profiles)
