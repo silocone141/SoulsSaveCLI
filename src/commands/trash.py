@@ -5,6 +5,14 @@ import send2trash
 from src.utils import fetch
 
 
+def try_trash(items):
+    try:
+        send2trash.send2trash(items)
+
+    except FileNotFoundError:
+        click.echo("File not found.")
+
+
 @click.command()
 @click.option("--profile", "-p", "profile", type=str, required=True,
               prompt=False)
@@ -56,13 +64,26 @@ def trash(profile, save_state, dry_run, yes):
         return
 
     elif yes:
-        send2trash.send2trash(deletions)
+        try_trash(deletions)
         click.echo(f"Moved {len(staged_files)} file(s) to the system trash.")
+
+        if not save_state:
+            config_values["profiles"].pop(profile, None)
+            fetch.write_data(fetch.get_config_file(), config_values)
+            click.echo(f"Profile '{profile}' removed from configuration file.")
 
     else:
         if click.confirm(
                 f"Action will move {len(staged_files)} file(s) to the "
                 "system trash. Proceed?"):
-            send2trash.send2trash(deletions)
+            try_trash(deletions)
             click.echo(
                 f"Moved {len(staged_files)} file(s) to the system trash.")
+
+            if not save_state:
+                if click.confirm(f"Would you like to remove '{profile}' from "
+                                 "your configuration file?"):
+                    config_values["profiles"].pop(profile, None)
+                    fetch.write_data(fetch.get_config_file(), config_values)
+                    click.echo(f"Profile '{profile}' removed from "
+                               "configuration file.")
