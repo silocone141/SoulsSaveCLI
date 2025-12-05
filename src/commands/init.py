@@ -21,11 +21,17 @@ def init():
                                        "store save states")
 
         if not os.path.isdir(save_states_dir):
-            try:
-                os.makedirs(save_states_dir)
+            if click.confirm(f"'{save_states_dir}' does not exist. Would you "
+                             "like to create it?"):
+                try:
+                    os.makedirs(save_states_dir)
 
-            except OSError:
-                raise OSError(f"Failed to create '{save_states_dir}'")
+                except OSError:
+                    raise OSError(f"Failed to create '{save_states_dir}'")
+
+            else:
+                click.echo("Configuration file not generated.")
+                return
 
         file_content = {"save_states": save_states_dir, "profiles": {}}
         fetch.write_data(config_file, file_content)
