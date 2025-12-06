@@ -21,7 +21,7 @@ def ui(profile):
 
     if profile:
         profile_path = os.path.join(save_state_path, profile)
-        fzf.save_states(profile, profile_path)
+        fzf.select_save_state(profile, profile_path)
 
     else:
         fzf.select_profile(profiles)

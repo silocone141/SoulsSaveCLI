@@ -31,7 +31,7 @@ def select_profile(profiles):
     )
 
 
-def save_states(profile, profile_path):
+def select_save_state(profile, profile_path):
     subprocess.run(
         [
             "fzf",
