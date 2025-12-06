@@ -24,7 +24,7 @@ def try_trash(items):
               help="Do not ask for confirmation")
 def trash(profile, save_state, dry_run, yes):
     """
-    Delete a profile or save-state (sends files to system trash)
+    Move a profile or save state to trash
     """
 
     config_values = fetch.get_config_values(profile)

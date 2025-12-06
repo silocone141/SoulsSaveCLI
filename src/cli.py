@@ -7,15 +7,16 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
 @click.group(invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
-@click.option("--profile", "-p", "profile", type=str)
+@click.option("--profile", "-p", "profile", type=str,
+              help="Open profile in interactive mode")
 @click.pass_context
 def cli(ctx, profile):
     """
     A save file manager designed for FromSoftware's games
 
     If a valid configuration file exists and no subcommand provided,
-    forwards to 'soulsave ui'. Else, prompts to create the configuration
-    file and prints help message.
+    soulsave launches interactive mode ('soulsave ui'). Otherwise, it prompts
+    you to create a configuration file and prints this message.
     """
 
     if ctx.invoked_subcommand is None:
