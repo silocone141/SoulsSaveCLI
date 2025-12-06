@@ -18,7 +18,8 @@ def list(profile, no_tree, list_profiles):
     """
     List save states or profiles
 
-    Uses GNU tree if available, otherwise lists files in each directory
+    Uses GNU tree if available, otherwise prints a simple list of the files
+    in each profile
     """
 
     config_values = fetch.get_config_values(profile)
