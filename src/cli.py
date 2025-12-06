@@ -13,8 +13,8 @@ def cli(ctx, profile):
     """
     A save file manager designed for FromSoftware's games
 
-    If a valid configuration file exists, forwards to
-    'soulsave ui'. Else, prompts to create the configuration
+    If a valid configuration file exists and no subcommand provided,
+    forwards to 'soulsave ui'. Else, prompts to create the configuration
     file and prints help message.
     """
 
