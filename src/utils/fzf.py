@@ -56,8 +56,7 @@ def select_save_state(profile, profile_path):
             f"ctrl-r:execute(soulsave rename -p '{profile}' -s "
             "{})+" + f"become(soulsave ui -p '{profile}'),"
             "ctrl-z:ignore,"
-            f"enter:execute(soulsave load -p '{profile}' "
-            "-n {}),"
+            f"enter:execute(soulsave load -p '{profile}' " + "-n {}),"
             "double-click:ignore",
         ],
         cwd=profile_path,
