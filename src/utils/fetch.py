@@ -31,6 +31,10 @@ def write_data(file_path, data):
 
 
 def get_config_file():
+    """
+    Return path to configuration file
+    """
+
     config_dir = os.getenv("XDG_CONFIG_HOME",
                            os.path.join(os.getenv("HOME"), ".config"))
 
@@ -38,6 +42,12 @@ def get_config_file():
 
 
 def get_config_values(profile=None):
+    """
+    Validate configuration values and raise exception if error is found. If the
+    configuration file is valid, return configuration values. A profile can be
+    passed for profile-specific validations.
+    """
+
     config_file = get_config_file()
     config_data = get_data(config_file)
 
@@ -73,6 +83,15 @@ def get_config_values(profile=None):
 
 
 def resolve_save(profile, path, save, extension):
+    """
+    Given a profile, the path the game's save file, save file name (with or
+    without extension), and the save file extension return the path to the
+    game's save file. If save file does not exist, return None.
+
+    Allows for save file name with extension to be passed to --save-state
+    options
+    """
+
     save_file = os.path.join(path, profile,
                              f"{save}")
 

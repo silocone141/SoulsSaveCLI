@@ -3,6 +3,10 @@ import subprocess
 
 
 def list_files(path):
+    """
+    Given a path to a directory, return a list of its contents
+    """
+
     tree = ''
 
     for root, dirs, files in os.walk(path):
@@ -20,6 +24,11 @@ def list_files(path):
 
 
 def get_tree(path, wd):
+    """
+    Set the cwd to `wd` and return `tree path`, where `path` is contained
+    in working directory `wd`
+    """
+
     tree = subprocess.run(["tree", path],
                           capture_output=True,
                           text=True,
