@@ -50,4 +50,4 @@ def list(profile, no_tree, list_profiles):
     else:
         profile = os.path.relpath(os.path.join(save_state_path, profile),
                                   save_state_path)
-        click.echo(direct.get_gnu_tree(profile, save_state_path).stdout)
+        click.echo(direct.get_tree(profile, save_state_path).stdout)

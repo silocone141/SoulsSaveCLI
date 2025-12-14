@@ -19,7 +19,7 @@ def list_files(path):
     return tree.strip()
 
 
-def get_gnu_tree(path, wd):
+def get_tree(path, wd):
     tree = subprocess.run(["tree", path],
                           capture_output=True,
                           text=True,
