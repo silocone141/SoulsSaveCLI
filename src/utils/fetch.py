@@ -44,8 +44,9 @@ def get_config_file():
 def get_config_values(profile=None):
     """
     Validate configuration values and raise exception if error is found. If the
-    configuration file is valid, return configuration values. A profile can be
-    passed for profile-specific validations.
+    configuration file is valid, return configuration values.
+
+    A profile can be passed for profile-specific validations.
     """
 
     config_file = get_config_file()
@@ -84,7 +85,7 @@ def get_config_values(profile=None):
 
 def resolve_save(profile, path, save, extension):
     """
-    Given a profile, the path the game's save file, save file name (with or
+    Given a profile, the path to the game's save file, save file name (with or
     without extension), and the save file extension return the path to the
     game's save file. If save file does not exist, return None.
 

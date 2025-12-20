@@ -9,7 +9,7 @@ from src.utils import direct, fetch
 @click.option("--no-tree",
               "no_tree",
               is_flag=True,
-              help="Do not use GNU tree")
+              help="Do not use tree command")
 @click.option("--profiles",
               "list_profiles",
               is_flag=True,
@@ -18,8 +18,8 @@ def list(profile, no_tree, list_profiles):
     """
     List save states or profiles
 
-    Uses GNU tree if available, otherwise prints a simple list of the files
-    in each profile
+    Uses the tree command if available, otherwise prints a simple list of the
+    files in each profile
     """
 
     config_values = fetch.get_config_values(profile)
