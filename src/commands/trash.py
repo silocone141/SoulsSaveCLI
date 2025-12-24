@@ -20,9 +20,9 @@ def try_trash(items):
               prompt=False)
 @click.option("--dry-run", "dry_run", is_flag=True,
               help="Show what would be deleted")
-@click.option("--yes", "-y", "yes", is_flag=True,
+@click.option("--silent", "silent", is_flag=True,
               help="Do not ask for confirmation")
-def trash(profile, save_state, dry_run, yes):
+def trash(profile, save_state, dry_run, silent):
     """
     Move a profile or save state to trash
     """
@@ -63,7 +63,7 @@ def trash(profile, save_state, dry_run, yes):
 
         return
 
-    elif yes:
+    elif silent:
         try_trash(deletions)
         click.echo(f"Moved {len(staged_files)} file(s) to the system trash.")
 

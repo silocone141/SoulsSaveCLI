@@ -22,9 +22,9 @@ def try_rename(old_path, new_path):
 @click.option("--new-name", "-n", "new_name", type=str,
               callback=fetch.get_change_parameter,
               help="New name for profile/save state")
-@click.option("--yes", "-y", "yes", is_flag=True,
+@click.option("--silent", "silent", is_flag=True,
               help="Do not ask for confirmation")
-def rename(profile, save_state, new_name, yes):
+def rename(profile, save_state, new_name, silent):
     """
     Rename a profile or save state
     """
@@ -45,7 +45,7 @@ def rename(profile, save_state, new_name, yes):
         else:
             new_save_file = os.path.join(save_state_path, profile, new_name +
                                          save_extension)
-            if yes:
+            if silent:
                 try_rename(save_file, new_save_file)
 
             else:
@@ -57,7 +57,7 @@ def rename(profile, save_state, new_name, yes):
         profile_path = os.path.join(save_state_path, profile)
         new_profile_path = os.path.join(save_state_path, new_name)
 
-        if yes:
+        if silent:
             try_rename(profile_path, new_profile_path)
             profiles[new_name] = config_values["profiles"].pop(profile)
             fetch.write_data(fetch.get_config_file(), config_values)
