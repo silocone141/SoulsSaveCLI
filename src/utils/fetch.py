@@ -1,3 +1,4 @@
+import click
 import json
 import os
 
@@ -103,3 +104,17 @@ def resolve_save(profile, path, save, extension):
             return
 
     return save_file
+
+
+def get_change_parameter(ctx, param, value):
+    """
+    When a file/directory's name will be changed, show it in the rename prompt
+    """
+
+    if value is not None:
+        return value
+
+    profile = ctx.params.get("profile", None)
+    save_state = ctx.params.get("save_state", None)
+
+    return click.prompt(f"Old name: {save_state or profile}\nNew Name: ")

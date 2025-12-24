@@ -19,7 +19,8 @@ def try_rename(old_path, new_path):
                    "to be changed")
 @click.option("--save-state", "-s", "save_state", type=str,
               help="Save state name to be changed")
-@click.option("--new-name", "-n", "new_name", type=str, prompt=True,
+@click.option("--new-name", "-n", "new_name", type=str,
+              callback=fetch.get_change_parameter,
               help="New name for profile/save state")
 @click.option("--yes", "-y", "yes", is_flag=True,
               help="Do not ask for confirmation")
