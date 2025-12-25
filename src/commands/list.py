@@ -6,13 +6,9 @@ from src.utils import direct, fetch
 
 @click.command()
 @click.argument("profile", type=str, required=False)
-@click.option("--no-tree",
-              "no_tree",
-              is_flag=True,
+@click.option("--no-tree", "no_tree", is_flag=True,
               help="Do not use tree command")
-@click.option("--profiles",
-              "list_profiles",
-              is_flag=True,
+@click.option("--profiles", "-p", "list_profiles", is_flag=True,
               help="List only profile names")
 def list(profile, no_tree, list_profiles):
     """
