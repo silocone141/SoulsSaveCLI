@@ -8,7 +8,7 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 @click.group(invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
 @click.option("--profile", "-p", "profile", type=str,
-              help="Open profile in interactive mode")
+              help="[UI] Open profile in interactive mode")
 @click.pass_context
 def cli(ctx, profile):
     """
