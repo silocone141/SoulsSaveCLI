@@ -5,11 +5,11 @@ from src.utils import direct, fetch
 
 
 @click.command()
-@click.argument("profile", type=str, required=False)
+@click.option("--profile", "-p", type=str)
+@click.option("--profiles", "list_profiles", is_flag=True,
+              help="List only profile names")
 @click.option("--no-tree", "no_tree", is_flag=True,
               help="Do not use tree command")
-@click.option("--profiles", "-p", "list_profiles", is_flag=True,
-              help="List only profile names")
 def list(profile, no_tree, list_profiles):
     """
     List save states or profiles

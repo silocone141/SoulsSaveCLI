@@ -39,7 +39,7 @@ def rename(profile, save_state, new_name, silent):
                                        save_extension)
         if save_file is None:
             click.echo(f"'{save_state}' does not exist. Use 'soulsave "
-                       f"list {profile}' to list available options.")
+                       f"list -p {profile}' to list available options.")
             return
 
         else:

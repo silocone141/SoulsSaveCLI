@@ -40,7 +40,7 @@ def trash(profile, save_state, dry_run, silent):
 
         if save_file is None:
             click.echo(f"'{save_state}' does not exist. Run "
-                       f"'soulsave list {profile}' to see available "
+                       f"'soulsave list -p {profile}' to see available "
                        "options")
             return
 
