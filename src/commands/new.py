@@ -4,21 +4,11 @@ from src.utils import fetch
 
 
 @click.command()
-@click.option(
-    "--profile",
-    "-p",
-    "profile",
-    type=str,
-    prompt="Profile Name",
-    required=True
-)
-@click.option(
-    "--save-file",
-    "-s",
-    "save_file",
-    type=click.Path(exists=True, dir_okay=False, resolve_path=True),
-    prompt="Enter the path to the game's save file",
-)
+@click.option("--profile", "-p", "profile", type=str, prompt="Profile Name",
+              required=True)
+@click.option("--save-file", "-s", "save_file",
+              type=click.Path(exists=True, dir_okay=False, resolve_path=True),
+              prompt="Enter the path to the game's save file")
 def new(profile, save_file):
     """
     Create a new game profile
