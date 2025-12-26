@@ -14,9 +14,9 @@ class ProfileDoesNotExist(Exception):
     pass
 
 
-def get_data(file_path):
+def get_data(path):
     try:
-        with open(file_path, "r") as file:
+        with open(path, "r") as file:
             config_data = json.load(file)
         return config_data
 
@@ -25,8 +25,8 @@ def get_data(file_path):
                                 "init' to generate the file")
 
 
-def write_data(file_path, data):
-    with open(file_path, "w") as file:
+def write_data(path, data):
+    with open(path, "w") as file:
         json.dump(data, file, indent=4)
 
 
