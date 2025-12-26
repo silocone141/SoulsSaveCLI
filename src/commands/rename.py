@@ -20,7 +20,7 @@ def try_rename(old_path, new_path):
 @click.option("--save-state", "-s", "save_state", type=str,
               help="Save state name to be changed")
 @click.option("--new-name", "-n", "new_name", type=str,
-              callback=prompts.get_change_parameter,
+              callback=prompts.name_change,
               help="New name for profile/save state")
 @click.option("--silent", "silent", is_flag=True,
               help="Do not ask for confirmation")

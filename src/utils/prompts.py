@@ -2,7 +2,7 @@ import click
 import os
 
 
-def get_change_parameter(ctx, param, value):
+def name_change(ctx, param, value):
     """
     When a file/directory's name will be changed, show it in the rename prompt
     """
