@@ -64,8 +64,8 @@ def rename(profile, save_state, new_name, silent):
 
         else:
             if click.confirm(f"Action will rename '{profile_path}' to "
-                             f"'{new_profile_path}'.\nNote: This will also "
-                             f"update the configuration file. Proceed?"):
+                             f"'{new_profile_path}'.\nNote: This action will "
+                             f"also update the configuration file. Proceed?"):
                 try_rename(profile_path, new_profile_path)
                 profiles[new_name] = config_values["profiles"].pop(profile)
                 fetch.write_data(fetch.get_config_file(), config_values)
