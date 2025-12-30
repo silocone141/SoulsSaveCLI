@@ -72,6 +72,7 @@ def get_config_values(profile=None):
 
     for dir_name in profile_list:
         save_file = config_data["profiles"][dir_name]
+
         if not os.path.isfile(save_file):
             raise InvalidSaveFile(f"Save file for profile '{dir_name}' "
                                   f"does not exist. Value: '{save_file}'")
