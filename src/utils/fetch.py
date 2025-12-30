@@ -96,10 +96,11 @@ def resolve_save(profile, path, save, extension):
     save_file = os.path.join(path, profile,
                              f"{save}")
 
-    if not os.path.isfile(save_file):
-        save_file = os.path.join(path, profile,
-                                 f"{save + extension}")
-        if not os.path.isfile(save_file):
-            return
+    with_ext = os.path.isfile(save_file)
+    without_ext = os.path.isfile(os.path.join(path, profile,
+                                              f"{save + extension}"))
+
+    if not with_ext or without_ext:
+        return
 
     return save_file
