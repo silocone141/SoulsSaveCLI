@@ -27,7 +27,7 @@ def load(profile, name):
 
     if save_file_path is None:
         click.echo(
-            f"'{name}'.{save_extension} does not exist. Use "
+            f"'{name}' does not exist. Use "
             "'soulsave list -p {profile}' to see available options")
 
     shutil.copyfile(save_file_path, game_save_path)
