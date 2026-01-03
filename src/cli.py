@@ -1,6 +1,6 @@
 import click
 import os
-from src.commands import add, init, list, load, new, rename, trash, ui
+from src.commands import add, init, list_saves, load, new, rename, trash, ui
 from src.utils import fetch
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
@@ -33,7 +33,7 @@ def cli(ctx, profile):
 
 cli.add_command(add.add)
 cli.add_command(init.init)
-cli.add_command(list.list)
+cli.add_command(list_saves.list)
 cli.add_command(load.load)
 cli.add_command(new.new)
 cli.add_command(rename.rename)
