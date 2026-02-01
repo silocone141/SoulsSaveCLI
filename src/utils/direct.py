@@ -7,7 +7,7 @@ def list_files(path):
     Given a path to a directory, return a list of its contents
     """
 
-    tree = ''
+    tree = ""
 
     for root, dirs, files in os.walk(path):
         if root != path:
@@ -29,9 +29,6 @@ def get_tree(path, wd):
     in working directory `wd`
     """
 
-    tree = subprocess.run(["tree", path],
-                          capture_output=True,
-                          text=True,
-                          check=True,
-                          cwd=wd)
+    tree = subprocess.run(["tree", path], capture_output=True, text=True,
+                          check=True, cwd=wd)
     return tree

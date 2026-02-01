@@ -94,8 +94,7 @@ def resolve_save(profile, path, save, extension):
     options
     """
 
-    save_file = os.path.join(path, profile,
-                             f"{save}")
+    save_file = os.path.join(path, profile, f"{save}")
 
     with_ext = os.path.isfile(save_file)
     without_ext = os.path.isfile(os.path.join(path, profile,
