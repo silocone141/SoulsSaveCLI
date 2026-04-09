@@ -100,7 +100,11 @@ def resolve_save(profile, path, save, extension):
     without_ext = os.path.isfile(os.path.join(path, profile,
                                               f"{save + extension}"))
 
-    if not with_ext or without_ext:
-        return
+    if with_ext:
+        return save_file
 
-    return save_file
+    elif without_ext:
+        return save_file + extension
+
+    else:
+        return
