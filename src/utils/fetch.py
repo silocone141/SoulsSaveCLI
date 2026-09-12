@@ -1,16 +1,18 @@
 import json
 import os
 
+import click
 
-class InvalidSaveStatePath(Exception):
+
+class InvalidSaveStatePath(click.ClickException):
     pass
 
 
-class InvalidSaveFile(Exception):
+class InvalidSaveFile(click.ClickException):
     pass
 
 
-class ProfileDoesNotExist(Exception):
+class ProfileDoesNotExist(click.ClickException):
     pass
 
 
@@ -21,8 +23,8 @@ def get_data(path):
         return config_data
 
     except FileNotFoundError:
-        raise FileNotFoundError("Config file does not exist. Run 'soulsave "
-                                "init' to generate the file")
+        raise click.ClickException("Config file does not exist. Run 'soulsave "
+                                   "init' to generate the file")
 
 
 def write_data(path, data):
@@ -58,7 +60,7 @@ def get_config_values(profile=None):
         profile_list = list(config_data["profiles"].keys())
 
     except KeyError:
-        raise KeyError(
+        raise click.ClickException(
             "Error reading configuration file. Please review your "
             "configuration or run 'soulsave init' to properly generate "
             "the file."
@@ -70,12 +72,10 @@ def get_config_values(profile=None):
                                       "Use 'soulsave new' to create a new "
                                       "profile.")
 
-    for dir_name in profile_list:
-        save_file = config_data["profiles"][dir_name]
-
+        save_file = config_data["profiles"][profile]
         if not os.path.isfile(save_file):
-            raise InvalidSaveFile(f"Save file for profile '{dir_name}' "
-                                  f"does not exist. Value: '{save_file}'")
+            raise InvalidSaveFile(f"Save file for profile '{profile}' does not"
+                                  f" exist. Value: '{save_file}'")
 
     if not os.path.isdir(save_state_path):
         raise InvalidSaveStatePath("Configuration option 'save_states' "
