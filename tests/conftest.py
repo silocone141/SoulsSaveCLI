@@ -4,21 +4,27 @@ from pathlib import Path
 
 import pytest
 
+from tests import helpers
 
-def tmp_conf_setup(tmp_path: Path, profile: str, create_save_dir=True,
+
+def tmp_conf_setup(tmp_path: Path, profile: str, create_save_state=True,
                    create_game_save=True) -> dict[str, str]:
     save_states_path = os.path.join(tmp_path, "save-states")
     game_path = os.path.join(tmp_path, "game")
     save_state_dir = os.path.join(save_states_path, profile)
+    save_state_file = os.path.join(save_state_dir, "saved-state.txt")
     game_save_dir = os.path.join(game_path, profile)
     game_save_file = os.path.join(game_save_dir, "save-file.txt")
 
-    if create_save_dir:
+    if create_save_state:
         os.mkdir(save_state_dir)
+        Path(save_state_file).touch()
+        helpers.write_txt(save_state_file, "Saved state content")
 
     if create_game_save:
         os.mkdir(game_save_dir)
         Path(game_save_file).touch()
+        helpers.write_txt(game_save_file, "Live game save")
 
     return {"save_state_dir": save_state_dir, "game_save_path": game_save_file}
 
