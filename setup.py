@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(name="soulsave-cli",
       version="0.2.0",
@@ -15,4 +15,4 @@ setup(name="soulsave-cli",
               "soulsave = src:cli",
           ],
       },
-      extras_require={"dev": ["twine"]})
+      extras_require={"dev": ["pytest", "twine"]})
