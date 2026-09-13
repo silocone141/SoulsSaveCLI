@@ -13,6 +13,7 @@ def init():
 
     config_file = fetch.get_config_file()
     write_file = True
+    config_path = fetch.get_config_dir()
 
     if os.path.isfile(config_file):
         write_file = click.confirm(
@@ -35,6 +36,9 @@ def init():
             else:
                 click.echo("Configuration file not generated.")
                 return
+
+        # Create soulsave directory in config home if it doesn't exist
+        os.makedirs(config_path, exist_ok=True)
 
         file_content = {"save_states": save_states_dir, "profiles": {}}
         fetch.write_data(config_file, file_content)

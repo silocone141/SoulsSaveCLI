@@ -32,15 +32,27 @@ def write_data(path, data):
         json.dump(data, file, indent=4)
 
 
+def get_config_home():
+    """
+    Get $XDG_CONFIG_HOME or $HOME/.config
+    """
+    return os.getenv("XDG_CONFIG_HOME",
+                     os.path.join(os.getenv("HOME"), ".config"))
+
+
+def get_config_dir():
+    """
+    Returns path to soulsave's configuration directory in either
+    $XDG_CONFIG_HOME or $HOME/.config
+    """
+    return os.path.join(get_config_home(), "soulsave")
+
+
 def get_config_file():
     """
     Return path to configuration file
     """
-
-    config_dir = os.getenv("XDG_CONFIG_HOME",
-                           os.path.join(os.getenv("HOME"), ".config"))
-
-    return os.path.join(config_dir, "soulsave/config.json")
+    return os.path.join(get_config_dir(), "config.json")
 
 
 def get_config_values(profile=None):
@@ -50,7 +62,6 @@ def get_config_values(profile=None):
 
     A profile can be passed for profile-specific validations.
     """
-
     config_file = get_config_file()
     config_data = get_data(config_file)
 
@@ -68,7 +79,7 @@ def get_config_values(profile=None):
 
     if profile is not None:
         if profile not in profile_list:
-            raise ProfileDoesNotExist(f"Profile {profile} does not exist. "
+            raise ProfileDoesNotExist(f"Profile '{profile}' does not exist. "
                                       "Use 'soulsave new' to create a new "
                                       "profile.")
 
@@ -93,7 +104,6 @@ def resolve_save(profile, path, save, extension):
     Allows for save file name with extension to be passed to --save-state
     options
     """
-
     save_file = os.path.join(path, profile, f"{save}")
 
     with_ext = os.path.isfile(save_file)

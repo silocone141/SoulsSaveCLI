@@ -50,8 +50,9 @@ def tmp_conf_setup(tmp_path, profile: str, save_states_path, game_path,
     return {"save_state_dir": save_state_dir, "game_save_path": game_save_file}
 
 
-def tmp_env_create(monkeypatch, tmp_path, params, create_save_states_dir=True,
-                   create_config_dir=True, create_game_saves_dir=True):
+def tmp_env_create(monkeypatch, tmp_path, params=[],
+                   create_save_states_dir=True, create_config_dir=True,
+                   create_game_saves_dir=True):
     tmp_paths = init_tmp_setup(monkeypatch, tmp_path)
     config_path = tmp_paths["config_path"]
     config_file = tmp_paths["config_file"]
@@ -146,12 +147,12 @@ def set_test_config(monkeypatch, tmp_path):
 
 @pytest.fixture
 def set_test_init(monkeypatch, tmp_path):
-    tmp_paths = init_tmp_setup(monkeypatch, tmp_path)
+    tmp_paths = tmp_env_create(monkeypatch, tmp_path, create_config_dir=False,
+                               create_save_states_dir=False,
+                               create_game_saves_dir=False)
     config_path = tmp_paths["config_path"]
     config_file = tmp_paths["config_file"]
     save_states_path = tmp_paths["save_states_path"]
-
-    os.mkdir(config_path)
 
     return {"tmp_path": tmp_path, "config_path": config_path,
             "config_file": config_file, "save_states_path": save_states_path}
