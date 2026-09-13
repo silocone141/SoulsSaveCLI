@@ -1,5 +1,7 @@
-import click
 import os
+
+import click
+
 from src.utils import fetch, prompts
 
 
@@ -9,8 +11,8 @@ def try_rename(old_path, new_path):
         click.echo("Rename succeeded.")
 
     except OSError:
-        raise OSError("New name is invalid. Rename operation was not "
-                      "successful.")
+        raise click.ClickException("OSError: New name is invalid. Rename "
+                                   "operation was not successful.")
 
 
 @click.command()
@@ -28,7 +30,6 @@ def rename(profile, save_state, new_name, silent):
     """
     Rename a profile or save state
     """
-
     config_values = fetch.get_config_values(profile)
     save_state_path = config_values["save_states"]
     save_extension = os.path.splitext(config_values["profiles"][profile])[1]
@@ -38,9 +39,9 @@ def rename(profile, save_state, new_name, silent):
         save_file = fetch.resolve_save(profile, save_state_path, save_state,
                                        save_extension)
         if save_file is None:
-            click.echo(f"'{save_state}' does not exist. Use 'soulsave "
-                       f"list -p {profile}' to list available options.")
-            return
+            click.ClickException(f"'{save_state}' does not exist. Use "
+                                 f"'soulsave list -p {profile}' to list "
+                                 "available options.")
 
         else:
             new_save_file = os.path.join(save_state_path, profile, new_name +

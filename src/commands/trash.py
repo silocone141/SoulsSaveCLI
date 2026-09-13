@@ -1,7 +1,9 @@
-import click
 import glob
 import os
+
+import click
 import send2trash
+
 from src.utils import fetch
 
 
@@ -10,7 +12,7 @@ def try_trash(items):
         send2trash.send2trash(items)
 
     except FileNotFoundError:
-        click.echo("File not found.")
+        click.ClickException("File not found.")
 
 
 @click.command()

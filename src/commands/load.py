@@ -1,6 +1,8 @@
-import click
 import os
 import shutil
+
+import click
+
 from src.utils import fetch
 
 
@@ -22,7 +24,7 @@ def load(profile, name):
                                         save_extension)
 
     if save_file_path is None:
-        click.echo(
+        raise click.ClickException(
             f"'{name}' does not exist. Use "
             f"'soulsave list -p \"{profile}\"' to see available options")
 
