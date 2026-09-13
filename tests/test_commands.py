@@ -6,26 +6,28 @@ from src.cli import cli
 from src.utils import fetch
 from tests import helpers
 
+# TODO  Add test for operating on valid profile when invalid exists
+
 
 # ------------
 # Command: ADD
 # ------------
-def test_add_happy_path(set_test_config):
-    tmp_data = set_test_config
-    result = CliRunner().invoke(cli, ["add", "--profile", "happy-path",
-                                      "--name", "new-happy-save"])
-    happy_path_save = os.path.join(tmp_data["save_states_paths"]["happy-path"],
-                                   "new-happy-save.txt")
+def test_add_happy_path(set_test_single_valid_profile):
+    tmp_data = set_test_single_valid_profile
+    existing_save_state_path = tmp_data["profile_paths"]["save_state_path"]
+    result = CliRunner().invoke(cli, ["add", "--profile", "existing",
+                                      "--name", "new-save"])
+    new_save_path = os.path.join(existing_save_state_path, "new-save.txt")
 
     assert result.exit_code == 0
     assert result.output.strip() == (
-            "Successfully created happy-path/new-happy-save"
+            "Successfully created 'existing'/'new-save'"
     )
-    assert os.path.isfile(happy_path_save)
+    assert os.path.isfile(new_save_path)
 
 
-def test_add_no_game_path(set_test_config):
-    tmp_data = set_test_config
+def test_add_no_game_path(set_test_invalid_save_file):
+    tmp_data = set_test_invalid_save_file
     result = CliRunner().invoke(cli, ["add", "--profile", "no-game",
                                       "--name", "nonexistent"])
 
@@ -50,7 +52,7 @@ def test_init_happy_path(set_test_init):
     helpers.assert_config_matches(target_data, config_file)
 
 
-def test_init_existing_config(set_test_config):
+def test_init_existing_config(set_test_single_valid_profile):
     """
     Test command init when a configuration file already exists.
 
@@ -58,7 +60,7 @@ def test_init_existing_config(set_test_config):
     configuration with no profiles is expected behavior.
     """
     # Initial setup
-    tmp_data = set_test_config
+    tmp_data = set_test_single_valid_profile
     save_states_path = tmp_data["config_data"]["save_states"]
     config_file = tmp_data["config_file"]
 
@@ -99,24 +101,24 @@ def test_init_decline_mkdir(set_test_init):
 # -------------
 # Command: LOAD
 # -------------
-def test_load_happy_path(set_test_config):
-    tmp_data = set_test_config
-    game_save_file = tmp_data["config_data"]["profiles"]["happy-path"]
+def test_load_happy_path(set_test_single_valid_profile):
+    tmp_data = set_test_single_valid_profile
+    game_save_file = tmp_data["config_data"]["profiles"]["existing"]
 
-    result = CliRunner().invoke(cli, ["load", "--profile", "happy-path",
+    result = CliRunner().invoke(cli, ["load", "--profile", "existing",
                                       "--name", "saved-state"])
 
     assert result.exit_code == 0
     assert result.output.strip() == (
-            "Successfully loaded happy-path/saved-state"
+            "Successfully loaded existing/saved-state"
     )
     assert helpers.get_txt(game_save_file) == "Saved state content"
 
 
-def test_load_fake_save_state(set_test_config):
-    tmp_data = set_test_config
-    game_save_file = tmp_data["config_data"]["profiles"]["happy-path"]
-    result = CliRunner().invoke(cli, ["load", "--profile", "happy-path",
+def test_load_fake_save_state(set_test_single_valid_profile):
+    tmp_data = set_test_single_valid_profile
+    game_save_file = tmp_data["config_data"]["profiles"]["existing"]
+    result = CliRunner().invoke(cli, ["load", "--profile", "existing",
                                       "--name", "fake-file"])
 
     assert result.exit_code == 1
@@ -127,22 +129,22 @@ def test_load_fake_save_state(set_test_config):
 # ------------
 # Command: NEW
 # ------------
-def test_new_happy_path_mkdir(set_test_config):
-    tmp_data = set_test_config
+def test_new_happy_path_mkdir(set_test_single_valid_profile):
+    tmp_data = set_test_single_valid_profile
     config_data = tmp_data["config_data"]
     save_states_path = config_data["save_states"]
-    happy_game_path = config_data["profiles"]["happy-path"]
+    existing_game_path = config_data["profiles"]["existing"]
 
     new_profile_dir = os.path.join(save_states_path, "new-profile")
     target_data = {
         "save_states": save_states_path,
         "profiles": {
             **config_data["profiles"],
-            "new-profile": happy_game_path
+            "new-profile": existing_game_path
         }
     }
     result = CliRunner().invoke(cli, ["new", "--profile", "new-profile",
-                                      "--save-file", happy_game_path])
+                                      "--save-file", existing_game_path])
 
     assert result.exit_code == 0
     assert "Successfully created profile 'new-profile'" in result.output
@@ -150,10 +152,10 @@ def test_new_happy_path_mkdir(set_test_config):
     helpers.assert_config_matches(target_data, tmp_data["config_file"])
 
 
-def test_new_happy_path_no_mkdir(set_test_new):
-    tmp_data = set_test_new
-    new_profile_dir = tmp_data["existing_profile"]["save_state_dir"]
-    save_file = tmp_data["existing_profile"]["game_save_path"]
+def test_new_happy_path_no_mkdir(set_test_new_no_mkdir):
+    tmp_data = set_test_new_no_mkdir
+    new_profile_dir = tmp_data["profile_paths"]["existing"]["save_state_path"]
+    save_file = tmp_data["profile_paths"]["existing"]["game_save_file"]
 
     # Confirm directory exists before we run command new
     assert os.path.isdir(new_profile_dir)
@@ -163,7 +165,6 @@ def test_new_happy_path_no_mkdir(set_test_new):
     target_data = {
         "save_states": tmp_data["config_data"]["save_states"],
         "profiles": {
-            **tmp_data["config_data"]["profiles"],
             "existing": save_file
         }
     }
@@ -173,15 +174,15 @@ def test_new_happy_path_no_mkdir(set_test_new):
     helpers.assert_config_matches(target_data, tmp_data["config_file"])
 
 
-def test_new_name_conflict(set_test_config):
-    tmp_data = set_test_config
+def test_new_name_conflict(set_test_single_valid_profile):
+    tmp_data = set_test_single_valid_profile
     config_data = tmp_data["config_data"]
-    happy_game_path = config_data["profiles"]["happy-path"]
-    result = CliRunner().invoke(cli, ["new", "--profile", "happy-path",
-                                      "--save-file", happy_game_path])
+    existing_game_path = config_data["profiles"]["existing"]
+    result = CliRunner().invoke(cli, ["new", "--profile", "existing",
+                                      "--save-file", existing_game_path])
 
     assert result.exit_code == 1
-    assert "A profile with name 'happy-path' already exists" in result.output
+    assert "A profile with name 'existing' already exists" in result.output
     assert config_data == fetch.get_data(tmp_data["config_file"])
 
 

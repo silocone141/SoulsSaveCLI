@@ -5,6 +5,8 @@ import pytest
 from src.utils import fetch
 from tests import helpers
 
+# TODO Normalize output strings (e.g. load vs. add success output)
+
 
 # -------
 # HELPERS
@@ -13,9 +15,6 @@ def init_tmp_setup(monkeypatch, tmp_path):
     """
     monkeypatch XDG_CONFIG_HOME to tmp_path and returns initial paths needed
     for testing.
-
-    NOTE: Not all fixtures will require all the returned files/paths so that
-          task is left to the individual fixtures.
     """
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
 
@@ -50,7 +49,7 @@ def tmp_conf_setup(tmp_path, profile: str, save_states_path, game_path,
     return {"save_state_dir": save_state_dir, "game_save_path": game_save_file}
 
 
-def tmp_env_create(monkeypatch, tmp_path, params=[],
+def tmp_env_create(monkeypatch, tmp_path, params=None,
                    create_save_states_dir=True, create_config_dir=True,
                    create_game_saves_dir=True):
     tmp_paths = init_tmp_setup(monkeypatch, tmp_path)
@@ -66,6 +65,9 @@ def tmp_env_create(monkeypatch, tmp_path, params=[],
 
     if create_game_saves_dir:
         os.mkdir(game_path)
+
+    if params is None:
+        params = []
 
     for profile in params:
         profile_name = profile["name"]
@@ -103,7 +105,37 @@ def tmp_env_create(monkeypatch, tmp_path, params=[],
 # FIXTURES
 # --------
 @pytest.fixture
-def set_test_config(monkeypatch, tmp_path):
+def set_test_single_valid_profile(monkeypatch, tmp_path):
+    """
+    Simple test environment that contains exactly one existing, valid profile.
+    """
+    params = [
+        {
+            "name": "existing",
+            "add_to_config": True,
+            "create_save_state": True,
+            "create_game_save": True
+        }
+    ]
+    tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
+    config_data = tmp_data["config_data"]
+    config_file = tmp_data["config_file"]
+
+    # Set return package
+    tmp_data_return = {
+        "config_file": config_file,
+        "config_data": config_data,
+        "profile_paths": tmp_data["profile_paths"]["existing"]
+    }
+
+    # Write config file
+    fetch.write_data(config_file, tmp_data_return["config_data"])
+
+    return tmp_data_return
+
+
+@pytest.fixture
+def set_test_invalid_save_file(monkeypatch, tmp_path):
     params = [
         {
             "name": "happy-path",
@@ -118,7 +150,6 @@ def set_test_config(monkeypatch, tmp_path):
             "create_game_save": False
         }
     ]
-
     tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
     config_file = tmp_data["config_file"]
     profile_paths = tmp_data["profile_paths"]
@@ -159,71 +190,27 @@ def set_test_init(monkeypatch, tmp_path):
 
 
 @pytest.fixture
-def set_test_new(monkeypatch, tmp_path):
-    tmp_paths = init_tmp_setup(monkeypatch, tmp_path)
-    config_path = tmp_paths["config_path"]
-    config_file = tmp_paths["config_file"]
-    save_states_path = tmp_paths["save_states_path"]
-    game_path = tmp_paths["game_path"]
-
-    os.mkdir(config_path)
-    os.mkdir(save_states_path)
-    os.mkdir(game_path)
-
-    existing_profile = tmp_conf_setup(tmp_path, "existing", save_states_path,
-                                      game_path)
-
-    # Set return package
-    tmp_data = {
-        "config_file": config_file,
-        "config_data": {
-            "save_states": save_states_path,
-            "profiles": {}
-        },
-        # existing_profile:
-        # {"save_state_dir": save_state_dir, "game_save_path": game_save_file}
-        "existing_profile": existing_profile
-    }
-
-    # Write config file
-    fetch.write_data(config_file, tmp_data["config_data"])
-
-    return tmp_data
-
-
-@pytest.fixture
-def set_test_single_valid_profile(monkeypatch, tmp_path):
-    """
-    Simple test environment that contains exactly one existing, valid profile.
-    """
-    tmp_paths = init_tmp_setup(monkeypatch, tmp_path)
-    config_path = tmp_paths["config_path"]
-    config_file = tmp_paths["config_file"]
-    save_states_path = tmp_paths["save_states_path"]
-    game_path = tmp_paths["game_path"]
-
-    os.mkdir(config_path)
-    os.mkdir(save_states_path)
-    os.mkdir(game_path)
-
-    existing_profile = tmp_conf_setup(tmp_path, "existing", save_states_path,
-                                      game_path)
+def set_test_new_no_mkdir(monkeypatch, tmp_path):
+    params = [
+        {
+            "name": "existing",
+            "add_to_config": False,
+            "create_save_state": True,
+            "create_game_save": True
+        }
+    ]
+    tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
+    config_file = tmp_data["config_file"]
+    config_data = tmp_data["config_data"]
 
     # Set return package
     tmp_data = {
         "config_file": config_file,
-        "config_data": {
-            "save_states": save_states_path,
-            "profiles": {
-                "existing": existing_profile["game_save_path"]
-            }
-        },
-        # existing_profile:
-        # {"save_state_dir": save_state_dir, "game_save_path": game_save_file}
-        "existing_profile": existing_profile
+        "config_data": config_data,
+        "profile_paths": tmp_data["profile_paths"]
     }
 
     # Write config file
-    fetch.write_data(config_file, tmp_data["config_data"])
+    fetch.write_data(config_file, config_data)
 
     return tmp_data

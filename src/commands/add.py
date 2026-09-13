@@ -1,6 +1,8 @@
-import click
 import os
 import shutil
+
+import click
+
 from src.utils import fetch
 
 
@@ -26,8 +28,8 @@ def add(profile, name):
         if click.confirm(f"A save state with name '{name}' already exists. "
                          "Do you want to overwrite it?"):
             shutil.copyfile(game_path, save_state_file_path)
-            click.echo(f"Successfully created {profile}/{name}")
+            click.echo(f"Successfully created '{profile}'/'{name}'")
 
     else:
         shutil.copyfile(game_path, save_state_file_path)
-        click.echo(f"Successfully created {profile}/{name}")
+        click.echo(f"Successfully created '{profile}'/'{name}'")
