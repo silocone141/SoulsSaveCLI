@@ -183,3 +183,50 @@ def test_new_name_conflict(set_test_config):
     assert result.exit_code == 1
     assert "A profile with name 'happy-path' already exists" in result.output
     assert config_data == fetch.get_data(tmp_data["config_file"])
+
+
+# ---------------
+# Command: RENAME
+# ---------------
+def test_rename_profile_happy_path(set_test_single_valid_profile):
+    # -----------------------
+    # Test: With confirmation
+    # -----------------------
+    tmp_data = set_test_single_valid_profile
+    original_config_data = tmp_data["config_data"]
+    config_file = tmp_data["config_file"]
+    dir_to_rename = os.path.join(original_config_data["save_states"],
+                                 "existing")
+    result = CliRunner().invoke(cli, ["rename", "--profile", "existing",
+                                      "--new-name", "happy-rename"], input="y")
+    target_data = {
+        "save_states": original_config_data["save_states"],
+        "profiles": {
+            "happy-rename": original_config_data["profiles"]["existing"]
+        }
+    }
+
+    assert result.exit_code == 0
+    assert f"Action will rename '{dir_to_rename}'" in result.output
+    assert "Rename succeeded" in result.output
+    helpers.assert_config_matches(target_data, config_file)
+
+    # --------------
+    # Test: --silent
+    # --------------
+    dir_to_rename = os.path.join(original_config_data["save_states"],
+                                 "happy-rename")
+    result = CliRunner().invoke(cli, ["rename", "--silent", "--profile",
+                                      "happy-rename", "--new-name",
+                                      "silent-rename"])
+    target_data = {
+        "save_states": original_config_data["save_states"],
+        "profiles": {
+            "silent-rename": original_config_data["profiles"]["existing"]
+        }
+    }
+
+    assert result.exit_code == 0
+    assert f"Action will rename '{dir_to_rename}'" not in result.output
+    assert "Rename succeeded" in result.output
+    helpers.assert_config_matches(target_data, config_file)
