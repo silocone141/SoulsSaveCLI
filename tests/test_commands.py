@@ -7,6 +7,9 @@ from src.utils import fetch
 from tests import helpers
 
 
+# ------------
+# Command: ADD
+# ------------
 def test_add_happy_path(set_test_config):
     tmp_data = set_test_config
     result = CliRunner().invoke(cli, ["add", "--profile", "happy-path",
@@ -32,6 +35,9 @@ def test_add_no_game_path(set_test_config):
         tmp_data["save_states_paths"]["no-game"], "nonexistent.txt"))
 
 
+# -------------
+# Command: INIT
+# -------------
 def test_init_happy_path(set_test_init):
     tmp_data = set_test_init
     save_states_path = tmp_data["save_states_path"]
@@ -88,3 +94,31 @@ def test_init_decline_mkdir(set_test_init):
     assert "Configuration file not generated." in result.output
     assert not os.path.isfile(config_file)
     assert not os.path.isdir(save_states_path)
+
+
+# -------------
+# Command: LOAD
+# -------------
+def test_load_happy_path(set_test_config):
+    tmp_data = set_test_config
+    game_save_file = tmp_data["config_data"]["profiles"]["happy-path"]
+
+    result = CliRunner().invoke(cli, ["load", "--profile", "happy-path",
+                                      "--name", "saved-state"])
+
+    assert result.exit_code == 0
+    assert result.output.strip() == (
+            "Successfully loaded happy-path/saved-state"
+    )
+    assert helpers.get_txt(game_save_file) == "Saved state content"
+
+
+def test_load_fake_save_state(set_test_config):
+    tmp_data = set_test_config
+    game_save_file = tmp_data["config_data"]["profiles"]["happy-path"]
+    result = CliRunner().invoke(cli, ["load", "--profile", "happy-path",
+                                      "--name", "fake-file"])
+
+    assert result.exit_code == 1
+    assert "'fake-file' does not exist" in result.output
+    assert helpers.get_txt(game_save_file) == "Live game save"
