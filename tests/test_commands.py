@@ -6,6 +6,8 @@ from src.cli import cli
 from src.utils import fetch
 from tests import helpers
 
+# TODO  Create tests for trash
+
 
 # ------------
 # Command: ADD
@@ -57,7 +59,6 @@ def test_init_existing_config(set_test_single_valid_profile):
     This command is only intended to be used once, therefore creating a
     configuration with no profiles is expected behavior.
     """
-    # Initial setup
     tmp_data = set_test_single_valid_profile
     save_states_path = tmp_data["config_data"]["save_states"]
     config_file = tmp_data["config_file"]
@@ -318,4 +319,41 @@ def test_rename_nonexistent_save_state(set_test_single_valid_profile):
 
     assert result.exit_code == 1
     assert "'fake-file' does not exist" in result.output
+    assert os.path.isfile(file_rename_path)
+
+
+def test_rename_bad_new_file_name(set_test_single_valid_profile):
+    # -----------------------
+    # Test: With confirmation
+    # -----------------------
+    tmp_data = set_test_single_valid_profile
+    save_state_dir = os.path.join(tmp_data["config_data"]["save_states"],
+                                  "existing")
+    file_rename_path = os.path.join(save_state_dir, "saved-state.txt")
+    proposed_file_path = os.path.join(save_state_dir, "bad/file/name.txt")
+    result = CliRunner().invoke(cli, ["rename", "--profile", "existing",
+                                      "--save-state", "saved-state",
+                                      "--new-name", "bad/file/name"],
+                                input="y")
+
+    assert result.exit_code == 1
+    assert "OSError: New name is invalid" in result.output
+    assert not os.path.isfile(proposed_file_path)
+    assert os.path.isfile(file_rename_path)
+
+    # --------------
+    # Test: --silent
+    # --------------
+    tmp_data = set_test_single_valid_profile
+    save_state_dir = os.path.join(tmp_data["config_data"]["save_states"],
+                                  "existing")
+    file_rename_path = os.path.join(save_state_dir, "saved-state.txt")
+    result = CliRunner().invoke(cli, ["rename", "--silent", "--profile",
+                                      "existing", "--save-state",
+                                      "saved-state", "--new-name",
+                                      "bad/file/name"])
+
+    assert result.exit_code == 1
+    assert "OSError: New name is invalid" in result.output
+    assert not os.path.isfile(proposed_file_path)
     assert os.path.isfile(file_rename_path)
