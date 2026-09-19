@@ -12,7 +12,7 @@ def try_trash(items):
         send2trash.send2trash(items)
 
     except FileNotFoundError:
-        click.ClickException("File not found.")
+        raise click.ClickException("File not found.")
 
 
 @click.command()
@@ -28,7 +28,6 @@ def trash(profile, save_state, dry_run, silent):
     """
     Move a profile or save state to trash
     """
-
     config_values = fetch.get_config_values(profile)
     save_state_path = config_values["save_states"]
     save_extension = os.path.splitext(config_values["profiles"][profile])[1]
@@ -39,16 +38,8 @@ def trash(profile, save_state, dry_run, silent):
     if save_state:
         save_file = fetch.resolve_save(profile, save_state_path, save_state,
                                        save_extension)
-
-        if save_file is None:
-            click.echo(f"'{save_state}' does not exist. Run "
-                       f"'soulsave list -p {profile}' to see available "
-                       "options")
-            return
-
-        else:
-            staged_files.append(save_file)
-            deletions.append(save_file)
+        staged_files.append(save_file)
+        deletions.append(save_file)
 
     else:
         profile_path = os.path.join(save_state_path, profile)

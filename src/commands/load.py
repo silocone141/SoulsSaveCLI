@@ -14,7 +14,6 @@ def load(profile, name):
     """
     Load an existing save state
     """
-
     config_values = fetch.get_config_values(profile)
     save_state_path = config_values["save_states"]
     game_save_path = config_values["profiles"][profile]
@@ -22,12 +21,5 @@ def load(profile, name):
     save_extension = os.path.splitext(game_save_path)[1]
     save_file_path = fetch.resolve_save(profile, save_state_path, name,
                                         save_extension)
-
-    if save_file_path is None:
-        raise click.ClickException(
-            f"'{name}' does not exist. Use "
-            f"'soulsave list -p \"{profile}\"' to see available options")
-
-    else:
-        shutil.copyfile(save_file_path, game_save_path)
-        click.echo(f"Successfully loaded {profile}/{name}")
+    shutil.copyfile(save_file_path, game_save_path)
+    click.echo(f"Successfully loaded {profile}/{name}")

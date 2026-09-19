@@ -38,21 +38,16 @@ def rename(profile, save_state, new_name, silent):
     if save_state:
         save_file = fetch.resolve_save(profile, save_state_path, save_state,
                                        save_extension)
-        if save_file is None:
-            click.ClickException(f"'{save_state}' does not exist. Use "
-                                 f"'soulsave list -p {profile}' to list "
-                                 "available options.")
+
+        new_save_file = os.path.join(save_state_path, profile, new_name +
+                                     save_extension)
+        if silent:
+            try_rename(save_file, new_save_file)
 
         else:
-            new_save_file = os.path.join(save_state_path, profile, new_name +
-                                         save_extension)
-            if silent:
+            if click.confirm(f"Action will rename '{save_file}' to "
+                             f"'{new_save_file}'. Proceed?"):
                 try_rename(save_file, new_save_file)
-
-            else:
-                if click.confirm(f"Action will rename '{save_file}' to "
-                                 f"'{new_save_file}'. Proceed?"):
-                    try_rename(save_file, new_save_file)
 
     else:
         profile_path = os.path.join(save_state_path, profile)

@@ -99,22 +99,19 @@ def resolve_save(profile, path, save, extension):
     """
     Given a profile, the path to the game's save file, save file name (with or
     without extension), and the save file extension return the path to the
-    game's save file. If save file does not exist, return None.
+    game's save file. If save file does not exist, raises a ClickException.
 
     Allows for save file name with extension to be passed to --save-state
     options
     """
-    save_file = os.path.join(path, profile, f"{save}")
+    input_save_file = os.path.join(path, profile, save)
+    save_file_force_ext = os.path.join(path, profile, save + extension)
 
-    with_ext = os.path.isfile(save_file)
-    without_ext = os.path.isfile(os.path.join(path, profile,
-                                              f"{save + extension}"))
+    if os.path.isfile(input_save_file):
+        return input_save_file
 
-    if with_ext:
-        return save_file
+    if os.path.isfile(save_file_force_ext):
+        return save_file_force_ext
 
-    elif without_ext:
-        return save_file + extension
-
-    else:
-        return
+    raise click.ClickException(f"'{save}' does not exist. Use 'soulsave list"
+                               f" -p {profile}' to list available options.")
