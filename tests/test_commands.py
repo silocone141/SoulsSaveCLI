@@ -380,3 +380,42 @@ def test_rename_bad_new_file_name(set_test_single_valid_profile):
     assert "OSError: New name is invalid" in result.output
     assert not os.path.isfile(proposed_file_path)
     assert os.path.isfile(file_rename_path)
+
+
+# --------------
+# Command: TRASH
+# --------------
+def test_trash_dry_run(set_test_single_valid_profile):
+    tmp_data = set_test_single_valid_profile
+    config_data = tmp_data["config_data"]
+    config_file = tmp_data["config_file"]
+    save_state_dir = tmp_data["profile_paths"]["save_state_path"]
+    save_state_file = os.path.join(save_state_dir, "saved-state.txt")
+
+    # ----------------------
+    # Test: Delete profile
+    # ----------------------
+    result = CliRunner().invoke(cli, ["trash", "--dry-run", "--profile",
+                                      "existing"], input="y")
+
+    assert result.exit_code == 0
+    assert "Action would move 2 file(s)" in result.output
+    assert f"{save_state_dir}/\n{save_state_file}" in result.output
+    assert os.path.isfile(save_state_file)
+    helpers.assert_config_matches(config_data, config_file)
+
+    # -----------------------
+    # Test: Delete save state
+    # -----------------------
+    result = CliRunner().invoke(cli, ["trash", "--dry-run", "--profile",
+                                      "existing", "--save-state", "saved-state"
+                                      ], input="y")
+
+    assert result.exit_code == 0
+    assert "Action would move 1 file(s)" in result.output
+    assert save_state_file in result.output
+    assert os.path.isfile(save_state_file)
+    helpers.assert_config_matches(config_data, config_file)
+
+
+# def test_trash_happy_path(set_test_single_valid_profile):
