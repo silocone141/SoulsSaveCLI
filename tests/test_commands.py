@@ -6,8 +6,6 @@ from src.cli import cli
 from src.utils import fetch
 from tests import helpers
 
-# TODO  Add test for operating on valid profile when invalid exists
-
 
 # ------------
 # Command: ADD
@@ -231,3 +229,80 @@ def test_rename_profile_happy_path(set_test_single_valid_profile):
     assert f"Action will rename '{dir_to_rename}'" not in result.output
     assert "Rename succeeded" in result.output
     helpers.assert_config_matches(target_data, config_file)
+
+
+def test_rename_nonexistent_profile(set_test_single_valid_profile):
+    # No need to test for --silent/input; exception will be caught before that
+    # stage in the call to fetch.get_config_values(profile) in rename.py
+    tmp_data = set_test_single_valid_profile
+    original_config_data = tmp_data["config_data"]
+    config_file = tmp_data["config_file"]
+    result = CliRunner().invoke(cli, ["rename", "--profile", "fake_profile",
+                                      "--new-name", "fake-rename"])
+
+    assert result.exit_code == 1
+    assert "Profile 'fake_profile' does not exist." in result.output
+    helpers.assert_config_matches(original_config_data, config_file)
+
+
+def test_rename_save_state_happy_path(set_test_single_valid_profile):
+    # -------------------------------------
+    # Test: With confirmation, no extension
+    # -------------------------------------
+    tmp_data = set_test_single_valid_profile
+    original_config_data = tmp_data["config_data"]
+    save_state_dir = os.path.join(original_config_data["save_states"],
+                                  "existing")
+    file_rename_path = os.path.join(save_state_dir, "saved-state.txt")
+    result = CliRunner().invoke(cli, ["rename", "--profile", "existing",
+                                      "--save-state", "saved-state",
+                                      "--new-name", "r1"], input="y")
+
+    assert result.exit_code == 0
+    assert f"Action will rename '{file_rename_path}'" in result.output
+    assert "Rename succeeded" in result.output
+    assert not os.path.isfile(os.path.join(save_state_dir, "saved-state.txt"))
+    assert os.path.isfile(os.path.join(save_state_dir, "r1.txt"))
+
+    # ---------------------------------------
+    # Test: With confirmation, with extension
+    # ---------------------------------------
+    file_rename_path = os.path.join(save_state_dir, "r1.txt")
+    result = CliRunner().invoke(cli, ["rename", "--profile", "existing",
+                                      "--save-state", "r1.txt",
+                                      "--new-name", "r2"], input="y")
+
+    assert result.exit_code == 0
+    assert f"Action will rename '{file_rename_path}'" in result.output
+    assert "Rename succeeded" in result.output
+    assert not os.path.isfile(os.path.join(save_state_dir, "r1.txt"))
+    assert os.path.isfile(os.path.join(save_state_dir, "r2.txt"))
+
+    # -------------------------------------
+    # Test: --silent, no extension
+    # -------------------------------------
+    file_rename_path = os.path.join(save_state_dir, "saved-state.txt")
+    result = CliRunner().invoke(cli, ["rename", "--silent", "--profile",
+                                      "existing", "--save-state", "r2",
+                                      "--new-name", "r3"])
+
+    assert result.exit_code == 0
+    assert "Rename succeeded" in result.output
+    assert not os.path.isfile(os.path.join(save_state_dir, "r2.txt"))
+    assert os.path.isfile(os.path.join(save_state_dir, "r3.txt"))
+
+    # ---------------------------------------
+    # Test: --silent, with extension
+    # ---------------------------------------
+    file_rename_path = os.path.join(save_state_dir, "r1.txt")
+    result = CliRunner().invoke(cli, ["rename", "--silent", "--profile",
+                                      "existing", "--save-state", "r3.txt",
+                                      "--new-name", "r4"])
+
+    assert result.exit_code == 0
+    assert "Rename succeeded" in result.output
+    assert not os.path.isfile(os.path.join(save_state_dir, "r3.txt"))
+    assert os.path.isfile(os.path.join(save_state_dir, "r4.txt"))
+
+
+# def test_rename_noexistent_save_state(set_test_single_valid_profile):
