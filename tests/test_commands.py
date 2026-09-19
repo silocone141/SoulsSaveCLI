@@ -305,4 +305,17 @@ def test_rename_save_state_happy_path(set_test_single_valid_profile):
     assert os.path.isfile(os.path.join(save_state_dir, "r4.txt"))
 
 
-# def test_rename_noexistent_save_state(set_test_single_valid_profile):
+def test_rename_nonexistent_save_state(set_test_single_valid_profile):
+    # Similar to renaming a profile, we don't need to test --silent/input cases
+    # here either as the exception will happen first in rename.py
+    tmp_data = set_test_single_valid_profile
+    save_state_dir = os.path.join(tmp_data["config_data"]["save_states"],
+                                  "existing")
+    file_rename_path = os.path.join(save_state_dir, "saved-state.txt")
+    result = CliRunner().invoke(cli, ["rename", "--profile", "existing",
+                                      "--save-state", "fake-file",
+                                      "--new-name", "r1"])
+
+    assert result.exit_code == 1
+    assert "'fake-file' does not exist" in result.output
+    assert os.path.isfile(file_rename_path)
