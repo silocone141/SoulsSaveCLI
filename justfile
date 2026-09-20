@@ -1,5 +1,5 @@
-commands:
-    pytest -vv tests/test_commands.py
+test-all:
+    pytest -vv tests/*
 
 init:
     python -m venv .venv
