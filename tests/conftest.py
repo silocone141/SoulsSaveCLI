@@ -27,7 +27,7 @@ def init_tmp_setup(monkeypatch, tmp_path):
         "config_file": config_file,
         "config_path": config_path,
         "save_states_path": save_states_path,
-        "game_path": game_path
+        "game_path": game_path,
     }
 
 
@@ -115,7 +115,7 @@ def set_test_single_valid_profile(monkeypatch, tmp_path):
             "add_to_config": True,
             "create_save_state": True,
             "create_game_save": True
-        }
+        },
     ]
     tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
     config_data = tmp_data["config_data"]
@@ -148,7 +148,7 @@ def set_test_invalid_save_file(monkeypatch, tmp_path):
             "add_to_config": True,
             "create_save_state": True,
             "create_game_save": False
-        }
+        },
     ]
     tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
     config_file = tmp_data["config_file"]
@@ -167,7 +167,7 @@ def set_test_invalid_save_file(monkeypatch, tmp_path):
         "save_states_paths": {
             "happy-path": happy_save_state_path,
             "no-game": no_game_save_state_path
-        }
+        },
     }
 
     # Write config file
@@ -197,7 +197,7 @@ def set_test_new_no_mkdir(monkeypatch, tmp_path):
             "add_to_config": False,
             "create_save_state": True,
             "create_game_save": True
-        }
+        },
     ]
     tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
     config_file = tmp_data["config_file"]
@@ -214,3 +214,40 @@ def set_test_new_no_mkdir(monkeypatch, tmp_path):
     fetch.write_data(config_file, config_data)
 
     return tmp_data
+
+
+@pytest.fixture
+def set_test_trash(monkeypatch, tmp_path):
+    params = [
+        {
+            "name": "confirm",
+            "add_to_config": True,
+            "create_save_state": True,
+            "create_game_save": True
+        },
+        {
+            "name": "silent",
+            "add_to_config": True,
+            "create_save_state": True,
+            "create_game_save": True
+        },
+    ]
+    tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
+    config_file = tmp_data["config_file"]
+    profile_paths = tmp_data["profile_paths"]
+
+    confirm_saves = profile_paths["confirm"]["save_state_path"]
+    silent_saves = profile_paths["silent"]["save_state_path"]
+
+    # Set return package + config_data
+    tmp_data_return = {
+        "config_file": config_file,
+        "config_data": tmp_data["config_data"],
+        "save_states_paths": {
+            "confirm": confirm_saves,
+            "silent": silent_saves,
+        },
+    }
+    fetch.write_data(config_file, tmp_data_return["config_data"])
+
+    return tmp_data_return
