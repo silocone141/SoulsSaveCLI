@@ -13,8 +13,8 @@ def ui(profile):
     Interactive mode (requires fzf)
     """
     if shutil.which("fzf") is None:
-        click.echo("Interactive mode requires fzf to be installed.")
-        return
+        raise click.ClickException("Interactive mode requires fzf to be "
+                                   "installed.")
 
     config_values = fetch.get_config_values(profile)
     save_state_path = config_values["save_states"]
