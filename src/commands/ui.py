@@ -1,6 +1,8 @@
-import click
 import os
 import shutil
+
+import click
+
 from src.utils import fetch, fzf
 
 
@@ -10,7 +12,6 @@ def ui(profile):
     """
     Interactive mode (requires fzf)
     """
-
     if shutil.which("fzf") is None:
         click.echo("Interactive mode requires fzf to be installed.")
         return

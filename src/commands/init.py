@@ -10,7 +10,6 @@ def init():
     """
     Generate the configuration file
     """
-
     config_file = fetch.get_config_file()
     write_file = True
     config_path = fetch.get_config_dir()

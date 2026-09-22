@@ -15,7 +15,6 @@ def new(profile, save_file):
     """
     Create a new game profile
     """
-
     config_file = fetch.get_config_file()
 
     config_values = fetch.get_config_values()

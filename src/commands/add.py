@@ -14,7 +14,6 @@ def add(profile, name):
     """
     Add a save state to an existing profile
     """
-
     config_values = fetch.get_config_values(profile)
     save_state_path = config_values["save_states"]
     game_path = config_values["profiles"][profile]

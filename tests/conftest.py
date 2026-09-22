@@ -1,8 +1,8 @@
 import os
 
 import pytest
-
 from src.utils import fetch
+
 from tests import helpers
 
 # TODO Normalize output strings (e.g. load vs. add success output)
@@ -33,6 +33,9 @@ def init_tmp_setup(monkeypatch, tmp_path):
 
 def tmp_conf_setup(tmp_path, profile: str, save_states_path, game_path,
                    create_save_state=True, create_game_save=True):
+    """
+
+    """
     save_state_dir = os.path.join(save_states_path, profile)
     save_state_file = os.path.join(save_state_dir, "saved-state.txt")
     game_save_dir = os.path.join(game_path, profile)
@@ -52,6 +55,9 @@ def tmp_conf_setup(tmp_path, profile: str, save_states_path, game_path,
 def tmp_env_create(monkeypatch, tmp_path, params=None,
                    create_save_states_dir=True, create_config_dir=True,
                    create_game_saves_dir=True):
+    """
+
+    """
     tmp_paths = init_tmp_setup(monkeypatch, tmp_path)
     config_path = tmp_paths["config_path"]
     config_file = tmp_paths["config_file"]
@@ -121,14 +127,12 @@ def set_test_single_valid_profile(monkeypatch, tmp_path):
     config_data = tmp_data["config_data"]
     config_file = tmp_data["config_file"]
 
-    # Set return package
     tmp_data_return = {
         "config_file": config_file,
         "config_data": config_data,
         "profile_paths": tmp_data["profile_paths"]["existing"],
     }
 
-    # Write config file
     fetch.write_data(config_file, tmp_data_return["config_data"])
 
     return tmp_data_return
@@ -153,14 +157,9 @@ def set_test_invalid_save_file(monkeypatch, tmp_path):
     tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
     config_file = tmp_data["config_file"]
     profile_paths = tmp_data["profile_paths"]
-
-    # Happy path directory in save-states/
     happy_save_state_path = profile_paths["happy-path"]["save_state_path"]
-
-    # Noexistent game save file's directory in save-states/
     no_game_save_state_path = profile_paths["no-game"]["save_state_path"]
 
-    # Set return package + config_data
     tmp_data_return = {
         "config_file": config_file,
         "config_data": tmp_data["config_data"],
@@ -170,7 +169,6 @@ def set_test_invalid_save_file(monkeypatch, tmp_path):
         },
     }
 
-    # Write config file
     fetch.write_data(config_file, tmp_data_return["config_data"])
 
     return tmp_data_return
@@ -178,6 +176,7 @@ def set_test_invalid_save_file(monkeypatch, tmp_path):
 
 @pytest.fixture
 def set_test_init(monkeypatch, tmp_path):
+    # Do not create $XDG_CONFIG_HOME/soulsave or the save state directories
     tmp_paths = tmp_env_create(monkeypatch, tmp_path, create_config_dir=False,
                                create_save_states_dir=False,
                                create_game_saves_dir=False)
@@ -203,14 +202,11 @@ def set_test_new_no_mkdir(monkeypatch, tmp_path):
     config_file = tmp_data["config_file"]
     config_data = tmp_data["config_data"]
 
-    # Set return package
     tmp_data = {
         "config_file": config_file,
         "config_data": config_data,
         "profile_paths": tmp_data["profile_paths"]
     }
-
-    # Write config file
     fetch.write_data(config_file, config_data)
 
     return tmp_data
@@ -239,7 +235,6 @@ def set_test_trash(monkeypatch, tmp_path):
     confirm_saves = profile_paths["confirm"]["save_state_path"]
     silent_saves = profile_paths["silent"]["save_state_path"]
 
-    # Set return package + config_data
     tmp_data_return = {
         "config_file": config_file,
         "config_data": tmp_data["config_data"],

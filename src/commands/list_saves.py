@@ -1,6 +1,8 @@
-import click
 import os
 import shutil
+
+import click
+
 from src.utils import direct, fetch
 
 
@@ -17,7 +19,6 @@ def list(profile, no_tree, list_profiles):
     Uses the tree command if available, otherwise prints a simple list of the
     files in each profile
     """
-
     config_values = fetch.get_config_values(profile)
     save_state_path = config_values["save_states"]
     game_profiles = config_values["profiles"].keys()
