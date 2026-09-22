@@ -6,22 +6,22 @@ from src.cli import cli
 from tests import helpers
 
 
-def test_trash_dry_run(set_test_single_valid_profile):
+def test_trash_dry_run(set_test_trash):
     """
     Test trash's --dry-run flag. Confirm that the command lists the files to be
     deleted and does not alter the files themselves or the configuration file.
     """
-    tmp_data = set_test_single_valid_profile
+    tmp_data = set_test_trash
     config_data = tmp_data["config_data"]
     config_file = tmp_data["config_file"]
-    save_state_dir = tmp_data["profile_paths"]["save_state_path"]
+    save_state_dir = tmp_data["save_states_paths"]["confirm"]
     save_state_file = os.path.join(save_state_dir, "saved-state.txt")
 
     # ----------------------
     # Test: Delete profile
     # ----------------------
     result = CliRunner().invoke(cli, ["trash", "--dry-run", "--profile",
-                                      "existing"], input="y")
+                                      "confirm"], input="y")
 
     assert result.exit_code == 0
     assert "Action would move 2 file(s)" in result.output
@@ -33,7 +33,7 @@ def test_trash_dry_run(set_test_single_valid_profile):
     # Test: Delete save state
     # -----------------------
     result = CliRunner().invoke(cli, ["trash", "--dry-run", "--profile",
-                                      "existing", "--save-state", "saved-state"
+                                      "confirm", "--save-state", "saved-state"
                                       ], input="y")
 
     assert result.exit_code == 0
@@ -128,6 +128,8 @@ def test_trash_nonexistent(set_test_trash):
     # --------------------------------
     # Test: Delete nonexistent profile
     # --------------------------------
+    # Exception should be caught at fetch.get_config_values(), so no
+    # need to supply input/--silent
     result = CliRunner().invoke(cli, ["trash", "--profile", "fake-profile"])
 
     assert result.exit_code == 1
@@ -138,6 +140,8 @@ def test_trash_nonexistent(set_test_trash):
     # -----------------------------------
     # Test: Delete nonexistent save state
     # -----------------------------------
+    # Exception should be caught at fetch.resolve_save(), so no need to supply
+    # input/--silent
     result = CliRunner().invoke(cli, ["trash", "--profile", "confirm",
                                       "--save-state", "nonexistent"])
 
