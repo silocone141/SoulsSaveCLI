@@ -6,6 +6,9 @@ from src.cli import cli
 
 
 def test_add_happy_path(set_test_single_valid_profile):
+    """
+    Test adding a new save state to an existing valid profile
+    """
     tmp_data = set_test_single_valid_profile
     existing_save_state_path = tmp_data["profile_paths"]["save_state_path"]
     result = CliRunner().invoke(cli, ["add", "--profile", "existing",

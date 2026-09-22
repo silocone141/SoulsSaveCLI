@@ -97,7 +97,7 @@ def tmp_env_create(monkeypatch, tmp_path, params=None,
         "config_path": config_path,
         "save_states_path": save_states_path,
         "game_path": game_path,
-        "profile_paths": profile_paths
+        "profile_paths": profile_paths,
     }
 
 
@@ -114,7 +114,7 @@ def set_test_single_valid_profile(monkeypatch, tmp_path):
             "name": "existing",
             "add_to_config": True,
             "create_save_state": True,
-            "create_game_save": True
+            "create_game_save": True,
         },
     ]
     tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
@@ -125,7 +125,7 @@ def set_test_single_valid_profile(monkeypatch, tmp_path):
     tmp_data_return = {
         "config_file": config_file,
         "config_data": config_data,
-        "profile_paths": tmp_data["profile_paths"]["existing"]
+        "profile_paths": tmp_data["profile_paths"]["existing"],
     }
 
     # Write config file
@@ -141,13 +141,13 @@ def set_test_invalid_save_file(monkeypatch, tmp_path):
             "name": "happy-path",
             "add_to_config": True,
             "create_save_state": True,
-            "create_game_save": True
+            "create_game_save": True,
         },
         {
             "name": "no-game",
             "add_to_config": True,
             "create_save_state": True,
-            "create_game_save": False
+            "create_game_save": False,
         },
     ]
     tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
@@ -196,7 +196,7 @@ def set_test_new_no_mkdir(monkeypatch, tmp_path):
             "name": "existing",
             "add_to_config": False,
             "create_save_state": True,
-            "create_game_save": True
+            "create_game_save": True,
         },
     ]
     tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
@@ -223,13 +223,13 @@ def set_test_trash(monkeypatch, tmp_path):
             "name": "confirm",
             "add_to_config": True,
             "create_save_state": True,
-            "create_game_save": True
+            "create_game_save": True,
         },
         {
             "name": "silent",
             "add_to_config": True,
             "create_save_state": True,
-            "create_game_save": True
+            "create_game_save": True,
         },
     ]
     tmp_data = tmp_env_create(monkeypatch, tmp_path, params)

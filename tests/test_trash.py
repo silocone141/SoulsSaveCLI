@@ -7,6 +7,10 @@ from tests import helpers
 
 
 def test_trash_dry_run(set_test_single_valid_profile):
+    """
+    Test trash's --dry-run flag. Confirm that the command lists the files to be
+    deleted and does not alter the files themselves or the configuration file.
+    """
     tmp_data = set_test_single_valid_profile
     config_data = tmp_data["config_data"]
     config_file = tmp_data["config_file"]
@@ -40,6 +44,10 @@ def test_trash_dry_run(set_test_single_valid_profile):
 
 
 def test_trash_profile_with_config_update_happy_path(set_test_trash):
+    """
+    Test trashing a profile and removing the profile from the configuration
+    file
+    """
     tmp_data = set_test_trash
     config_data = tmp_data["config_data"]
     config_file = tmp_data["config_file"]

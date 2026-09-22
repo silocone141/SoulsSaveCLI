@@ -8,6 +8,9 @@ from tests import helpers
 
 
 def test_init_happy_path(set_test_init):
+    """
+    Test init for fresh install
+    """
     tmp_data = set_test_init
     save_states_path = tmp_data["save_states_path"]
     config_file = tmp_data["config_file"]
@@ -53,6 +56,10 @@ def test_init_existing_config(set_test_single_valid_profile):
 
 
 def test_init_decline_mkdir(set_test_init):
+    """
+    Test init for a fresh installation, but decline creating the save states
+    directory causing the configuration file to not be generated.
+    """
     tmp_data = set_test_init
     save_states_path = tmp_data["save_states_path"]
     config_file = tmp_data["config_file"]
