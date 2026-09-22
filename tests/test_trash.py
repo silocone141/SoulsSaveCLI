@@ -113,3 +113,35 @@ def test_trash_profile_no_config_update_happy_path(set_test_trash):
     assert "'confirm' removed from configuration file" not in result.output
     assert not os.path.isdir(confirm_saves)
     helpers.assert_config_matches(config_data, config_file)
+
+
+def test_trash_nonexistent(set_test_trash):
+    """
+    Test trashing a nonexistent profile and a nonexistent save state
+    """
+    tmp_data = set_test_trash
+    config_data = tmp_data["config_data"]
+    save_states_dir = tmp_data["config_data"]["save_states"]
+    config_file = tmp_data["config_file"]
+    original_files = helpers.list_files(save_states_dir)
+
+    # --------------------------------
+    # Test: Delete nonexistent profile
+    # --------------------------------
+    result = CliRunner().invoke(cli, ["trash", "--profile", "fake-profile"])
+
+    assert result.exit_code == 1
+    assert "Profile 'fake-profile' does not exist" in result.output
+    assert original_files == helpers.list_files(save_states_dir)
+    helpers.assert_config_matches(config_data, config_file)
+
+    # -----------------------------------
+    # Test: Delete nonexistent save state
+    # -----------------------------------
+    result = CliRunner().invoke(cli, ["trash", "--profile", "confirm",
+                                      "--save-state", "nonexistent"])
+
+    assert result.exit_code == 1
+    assert "'nonexistent' does not exist" in result.output
+    assert original_files == helpers.list_files(save_states_dir)
+    helpers.assert_config_matches(config_data, config_file)
