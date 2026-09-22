@@ -3,7 +3,7 @@ from pathlib import Path
 from src.utils import fetch
 
 
-def assert_config_matches(target_data: dict, config_file: Path) -> None:
+def assert_config_matches(target_data: dict, config_file: str) -> None:
     """
     Given a dictionary and a path to a JSON file, assert that the dictionary is
     equal to the contents of the JSON file.
@@ -15,7 +15,7 @@ def assert_config_matches(target_data: dict, config_file: Path) -> None:
                                         f"Target data: '{target_data}'")
 
 
-def get_txt(path: Path) -> str:
+def get_txt(path: str) -> str:
     """
     Given a path to a file, return its contents
     """
@@ -23,9 +23,16 @@ def get_txt(path: Path) -> str:
         return file.read()
 
 
-def write_txt(path: Path, content: str) -> None:
+def write_txt(path: str, content: str) -> None:
     """
     Given a path to a file and a string, write the string to the file
     """
     with open(path, "w") as file:
         file.write(content)
+
+
+def list_files(dir: str):
+    """
+    Recursively find all files contained in dir (directory)
+    """
+    return [file for file in Path(dir).rglob("*") if file.is_file()]
