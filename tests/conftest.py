@@ -1,8 +1,8 @@
 import os
 
 import pytest
-from src.utils import fetch
 
+from src.utils import fetch
 from tests import helpers
 
 # TODO Normalize output strings (e.g. load vs. add success output)
@@ -242,6 +242,35 @@ def set_test_trash(monkeypatch, tmp_path):
             "confirm": confirm_saves,
             "silent": silent_saves,
         },
+    }
+    fetch.write_data(config_file, tmp_data_return["config_data"])
+
+    return tmp_data_return
+
+
+@pytest.fixture
+def set_test_trash_no_save_state(monkeypatch, tmp_path):
+    """
+    Test environment for attempting to delete a profile that exists in the
+    config file but does not have a directory in the save states home
+    """
+    params = [
+        {
+            "name": "config-only",
+            "add_to_config": True,
+            "create_save_state": False,
+            "create_game_save": True,
+        }
+    ]
+    tmp_data = tmp_env_create(monkeypatch, tmp_path, params)
+    config_file = tmp_data["config_file"]
+    profile_paths = tmp_data["profile_paths"]
+    save_state_path = profile_paths["config-only"]["save_state_path"]
+
+    tmp_data_return = {
+        "config_file": config_file,
+        "config_data": tmp_data["config_data"],
+        "save_state_path": save_state_path,
     }
     fetch.write_data(config_file, tmp_data_return["config_data"])
 

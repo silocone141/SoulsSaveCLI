@@ -45,7 +45,7 @@ def test_trash_dry_run(set_test_trash):
 
 def test_trash_profile_with_config_update_happy_path(set_test_trash):
     """
-    Test trashing a profile and removing the profile from the configuration
+    Trash a profile's save states and remove the profile from the configuration
     file
     """
     tmp_data = set_test_trash
@@ -95,8 +95,8 @@ def test_trash_profile_with_config_update_happy_path(set_test_trash):
 
 def test_trash_profile_no_config_update_happy_path(set_test_trash):
     """
-    Test trashing a profile without removing the profile from the configuration
-    file
+    Trash a profile's save states without removing the profile from the
+    configuration file
     """
     tmp_data = set_test_trash
     config_data = tmp_data["config_data"]
@@ -117,7 +117,7 @@ def test_trash_profile_no_config_update_happy_path(set_test_trash):
 
 def test_trash_nonexistent(set_test_trash):
     """
-    Test trashing a nonexistent profile and a nonexistent save state
+    Attempt to trash a nonexistent profile and a nonexistent save state
     """
     tmp_data = set_test_trash
     config_data = tmp_data["config_data"]
@@ -147,5 +147,25 @@ def test_trash_nonexistent(set_test_trash):
 
     assert result.exit_code == 1
     assert "'nonexistent' does not exist" in result.output
+    assert original_files == helpers.list_files(save_states_dir)
+    helpers.assert_config_matches(config_data, config_file)
+
+
+def test_trash_config_only(set_test_trash_no_save_state):
+    """
+    Attempt to trash a profile that exists on the configuration file but does
+    not have a directory in the save states home
+    """
+    tmp_data = set_test_trash_no_save_state
+    config_data = tmp_data["config_data"]
+    save_states_dir = tmp_data["config_data"]["save_states"]
+    config_file = tmp_data["config_file"]
+    original_files = helpers.list_files(save_states_dir)
+
+    result = CliRunner().invoke(cli, ["trash", "--profile", "config-only"],
+                                input="y\ny")
+
+    assert result.exit_code == 1
+    assert "File not found." in result.output
     assert original_files == helpers.list_files(save_states_dir)
     helpers.assert_config_matches(config_data, config_file)
