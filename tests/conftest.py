@@ -5,8 +5,6 @@ import pytest
 from src.utils import fetch
 from tests import helpers
 
-# TODO Normalize output strings (e.g. load vs. add success output)
-
 
 # -------
 # HELPERS
@@ -34,7 +32,9 @@ def init_tmp_setup(monkeypatch, tmp_path):
 def tmp_conf_setup(tmp_path, profile: str, save_states_path, game_path,
                    create_save_state=True, create_game_save=True):
     """
-
+    Given a profile, determine the paths to its save state directory and game
+    save file. Optionally create these objects with create_save_state and
+    create_game_save
     """
     save_state_dir = os.path.join(save_states_path, profile)
     save_state_file = os.path.join(save_state_dir, "saved-state.txt")
@@ -56,7 +56,14 @@ def tmp_env_create(monkeypatch, tmp_path, params=None,
                    create_save_states_dir=True, create_config_dir=True,
                    create_game_saves_dir=True):
     """
+    Given a list of profile parameters, set up the specified files.
 
+    Example element of params: {
+        "name": str,
+        "add_to_config": bool,
+        "create_save_state": bool,
+        "create_game_save": bool,
+    }
     """
     tmp_paths = init_tmp_setup(monkeypatch, tmp_path)
     config_path = tmp_paths["config_path"]
@@ -140,6 +147,10 @@ def set_test_single_valid_profile(monkeypatch, tmp_path):
 
 @pytest.fixture
 def set_test_invalid_save_file(monkeypatch, tmp_path):
+    """
+    Test environment with one valid and one invalid profile. The invalid
+    profile's game save file does not exist.
+    """
     params = [
         {
             "name": "happy-path",
@@ -176,7 +187,10 @@ def set_test_invalid_save_file(monkeypatch, tmp_path):
 
 @pytest.fixture
 def set_test_init(monkeypatch, tmp_path):
-    # Do not create $XDG_CONFIG_HOME/soulsave or the save state directories
+    """
+    Test environment to simulate a fresh installation: do not create
+    $XDG_CONFIG_HOME/soulsave or the save state directories
+    """
     tmp_paths = tmp_env_create(monkeypatch, tmp_path, create_config_dir=False,
                                create_save_states_dir=False,
                                create_game_saves_dir=False)
@@ -190,6 +204,10 @@ def set_test_init(monkeypatch, tmp_path):
 
 @pytest.fixture
 def set_test_new_no_mkdir(monkeypatch, tmp_path):
+    """
+    Test environment with existing save states but without a corresponding
+    configured profile
+    """
     params = [
         {
             "name": "existing",
@@ -214,6 +232,10 @@ def set_test_new_no_mkdir(monkeypatch, tmp_path):
 
 @pytest.fixture
 def set_test_trash(monkeypatch, tmp_path):
+    """
+    Test environment with two valid profiles to test the confirm/--silent paths
+    of trash in parallel
+    """
     params = [
         {
             "name": "confirm",
