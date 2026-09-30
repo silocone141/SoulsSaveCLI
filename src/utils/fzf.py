@@ -17,7 +17,7 @@ def select_profile(profiles):
             "\nctrl-r: Rename profile \t\tenter: Select profile\n"
             "esc: Quit\n\n",
             # Binds
-            "--bind=tab:down,btab:up,"
+            "--bind=tab:down,btab:up,alt-j:down,alt-k:up,"
             "ctrl-n:execute(soulsave new)+become(soulsave ui),"
             "ctrl-d:execute(soulsave trash -p {})+"
             "become(soulsave ui),"
