@@ -2,6 +2,9 @@ import subprocess
 
 
 def select_profile(profiles):
+    """
+    Open UI at the profile selection screen
+    """
     subprocess.run(
         [
             "fzf",
@@ -32,6 +35,9 @@ def select_profile(profiles):
 
 
 def select_save_state(profile, profile_path):
+    """
+    Given a profile, open the UI at the profile's save state selection screen
+    """
     subprocess.run(
         [
             "fzf",

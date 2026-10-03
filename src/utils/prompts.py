@@ -1,12 +1,12 @@
-import click
 import os
+
+import click
 
 
 def name_change(ctx, param, value):
     """
     When a file/directory's name will be changed, show it in the rename prompt
     """
-
     if value is not None:
         return value
 

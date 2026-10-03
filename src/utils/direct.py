@@ -6,7 +6,6 @@ def list_files(path):
     """
     Given a path to a directory, return a list of its contents
     """
-
     tree = ""
 
     for root, dirs, files in os.walk(path):

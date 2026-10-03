@@ -1,5 +1,7 @@
-import click
 import os
+
+import click
+
 from src.commands import add, init, list_saves, load, new, rename, trash, ui
 from src.utils import fetch
 
@@ -18,7 +20,6 @@ def cli(ctx, profile):
     soulsave launches interactive mode ('soulsave ui'). Otherwise, it prompts
     you to create a configuration file and prints this message.
     """
-
     if ctx.invoked_subcommand is None:
         if not os.path.isfile(fetch.get_config_file()):
             click.echo(ctx.get_help() + "\n\n")
