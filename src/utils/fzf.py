@@ -1,7 +1,7 @@
 import subprocess
 
 
-def select_profile(profiles):
+def select_profile(profiles: list[str]):
     """
     Open UI at the profile selection screen
     """
@@ -34,7 +34,7 @@ def select_profile(profiles):
     )
 
 
-def select_save_state(profile, profile_path):
+def select_save_state(profile: str, profile_path: str):
     """
     Given a profile, open the UI at the profile's save state selection screen
     """

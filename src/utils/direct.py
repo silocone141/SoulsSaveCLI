@@ -22,12 +22,16 @@ def list_files(path):
     return tree.strip()
 
 
-def get_tree(path, wd):
+def get_tree(wd, rel_path):
     """
-    Set the cwd to `wd` and return `tree path`, where `path` is contained
-    in working directory `wd`
+    Given a working directory (wd) and a relative path (rel_path) contained in
+    the working directory, return `tree <rel_path>`
+
+    Args:
+        wd: the working directory path
+        rel_path: the subdirectory to tree
     """
 
-    tree = subprocess.run(["tree", path], capture_output=True, text=True,
+    tree = subprocess.run(["tree", rel_path], capture_output=True, text=True,
                           check=True, cwd=wd)
     return tree

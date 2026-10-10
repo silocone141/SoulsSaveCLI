@@ -95,17 +95,25 @@ def get_config_values(profile=None):
         return {"save_states": save_state_path, "profiles": profiles}
 
 
-def resolve_save(profile, path, save, extension):
+def resolve_save(profile, save_states_path, save, extension):
     """
-    Given a profile, the path to the game's save file, save file name (with or
-    without extension), and the save file extension return the path to the
-    game's save file. If save file does not exist, raises a ClickException.
+    Given a profile, the path to the save states home directory, save state
+    file name (with or without extension), and the save file extension return
+    the path to the save state file. If save file does not exist, raises a
+    ClickException.
 
-    Allows for save file name with extension to be passed to --save-state
-    options
+    Allows for a save file name with an extension to be passed to --save-state
+    options.
+
+    Args:
+        profile: the name of the profile
+        save_states_path: the path to the save states home directory
+        save: the save state file name with or without extension
+        extension: the save file's extension
     """
-    input_save_file = os.path.join(path, profile, save)
-    save_file_force_ext = os.path.join(path, profile, save + extension)
+    input_save_file = os.path.join(save_states_path, profile, save)
+    save_file_force_ext = os.path.join(save_states_path, profile, save
+                                       + extension)
 
     if os.path.isfile(input_save_file):
         return input_save_file
@@ -114,4 +122,5 @@ def resolve_save(profile, path, save, extension):
         return save_file_force_ext
 
     raise click.ClickException(f"'{save}' does not exist. Use 'soulsave list"
-                               f" -p {profile}' to list available options.")
+                               f" -p \"{profile}\"' to list available "
+                               "options.")
