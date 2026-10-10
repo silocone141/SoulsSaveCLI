@@ -26,7 +26,7 @@ def select_profile(profiles: list[str]):
             "become(soulsave ui),"
             "ctrl-r:execute(soulsave rename -p {})+become(soulsave ui),"
             "enter:become(soulsave ui -p {}),"
-            "ctrl-z:ignore,double-click:ignore"
+            "ctrl-z:ignore,double-click:ignore",
         ],
         input="\n".join(sorted(profiles)),
         text=True,

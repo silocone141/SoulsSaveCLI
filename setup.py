@@ -12,9 +12,9 @@ setup(
     include_package_data=True,
     install_requires=["Click", "send2trash", "setuptools"],
     entry_points={
-      "console_scripts": [
-          "soulsave = src:cli",
-      ],
+        "console_scripts": [
+            "soulsave = src:cli",
+        ],
     },
-    extras_require={"dev": ["pytest", "twine"]}
+    extras_require={"dev": ["pytest", "twine", "ruff"]},
 )

@@ -47,8 +47,7 @@ def test_init_existing_config(set_test_single_valid_profile):
     # Test: Accept overwrite
     # ----------------------
     target_data = {"save_states": save_states_path, "profiles": {}}
-    result = CliRunner().invoke(cli, ["init"],
-                                input=f"y\n{save_states_path}")
+    result = CliRunner().invoke(cli, ["init"], input=f"y\n{save_states_path}")
 
     assert result.exit_code == 0
     assert "Successfully created configuration file: " in result.output

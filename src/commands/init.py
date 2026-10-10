@@ -16,21 +16,26 @@ def init():
 
     if os.path.isfile(config_file):
         write_file = click.confirm(
-            "A config file already exists. Overwrite existing?")
+            "A config file already exists. Overwrite existing?"
+        )
 
     if write_file:
-        save_states_dir = click.prompt("Enter a path to a directory to "
-                                       "store save states")
+        save_states_dir = click.prompt(
+            "Enter a path to a directory to store save states"
+        )
 
         if not os.path.isdir(save_states_dir):
-            if click.confirm(f"'{save_states_dir}' does not exist. Would you "
-                             "like to create it?"):
+            if click.confirm(
+                f"'{save_states_dir}' does not exist. Would you "
+                "like to create it?"
+            ):
                 try:
                     os.makedirs(save_states_dir)
 
                 except OSError:
                     raise click.ClickException(
-                            f"OSError: Failed to create '{save_states_dir}'")
+                        f"OSError: Failed to create '{save_states_dir}'"
+                    )
 
             else:
                 click.echo("Configuration file not generated.")

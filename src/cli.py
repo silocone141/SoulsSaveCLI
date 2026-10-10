@@ -9,8 +9,13 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
 @click.group(invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
-@click.option("--profile", "-p", "profile", type=str,
-              help="[UI] Open profile in interactive mode")
+@click.option(
+    "--profile",
+    "-p",
+    "profile",
+    type=str,
+    help="[UI] Open profile in interactive mode",
+)
 @click.pass_context
 def cli(ctx, profile):
     """
@@ -24,8 +29,10 @@ def cli(ctx, profile):
         if not os.path.isfile(fetch.get_config_file()):
             click.echo(ctx.get_help() + "\n\n")
 
-            if click.confirm("Configuration file does not exist. Would you "
-                             "like to generate it?"):
+            if click.confirm(
+                "Configuration file does not exist. Would you "
+                "like to generate it?"
+            ):
                 ctx.invoke(init.init)
 
         else:

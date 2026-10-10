@@ -16,14 +16,18 @@ def try_trash(items):
 
 
 @click.command()
-@click.option("--profile", "-p", "profile", type=str, required=True,
-              prompt=False)
-@click.option("--save-state", "-s", "save_state", type=str, required=False,
-              prompt=False)
-@click.option("--dry-run", "dry_run", is_flag=True,
-              help="Show what would be deleted")
-@click.option("--silent", "silent", is_flag=True,
-              help="Do not ask for confirmation")
+@click.option(
+    "--profile", "-p", "profile", type=str, required=True, prompt=False
+)
+@click.option(
+    "--save-state", "-s", "save_state", type=str, required=False, prompt=False
+)
+@click.option(
+    "--dry-run", "dry_run", is_flag=True, help="Show what would be deleted"
+)
+@click.option(
+    "--silent", "silent", is_flag=True, help="Do not ask for confirmation"
+)
 def trash(profile, save_state, dry_run, silent):
     """
     Move a profile or save state to trash
@@ -36,8 +40,9 @@ def trash(profile, save_state, dry_run, silent):
     staged_files = []
 
     if save_state:
-        save_file = fetch.resolve_save(profile, save_state_path, save_state,
-                                       save_extension)
+        save_file = fetch.resolve_save(
+            profile, save_state_path, save_state, save_extension
+        )
         staged_files.append(save_file)
         deletions.append(save_file)
 
@@ -47,10 +52,13 @@ def trash(profile, save_state, dry_run, silent):
         deletions.append(profile_path)
 
     if dry_run:
-        click.echo(f"Action would move {len(staged_files)} file(s) to the "
-                   "system trash.")
+        click.echo(
+            f"Action would move {len(staged_files)} file(s) to the "
+            "system trash."
+        )
         if click.confirm(
-                "Would you like to list the files that would be deleted?"):
+            "Would you like to list the files that would be deleted?"
+        ):
             for file in staged_files:
                 click.echo(file)
 
@@ -67,16 +75,21 @@ def trash(profile, save_state, dry_run, silent):
 
     else:
         if click.confirm(
-                f"Action will move {len(staged_files)} file(s) to the "
-                "system trash. Proceed?"):
+            f"Action will move {len(staged_files)} file(s) to the "
+            "system trash. Proceed?"
+        ):
             try_trash(deletions)
             click.echo(
-                f"Moved {len(staged_files)} file(s) to the system trash.")
+                f"Moved {len(staged_files)} file(s) to the system trash."
+            )
 
             if not save_state:
-                if click.confirm(f"Would you like to remove '{profile}' from "
-                                 "your configuration file?"):
+                if click.confirm(
+                    f"Would you like to remove '{profile}' from "
+                    "your configuration file?"
+                ):
                     config_values["profiles"].pop(profile, None)
                     fetch.write_data(fetch.get_config_file(), config_values)
-                    click.echo(f"Profile '{profile}' removed from "
-                               "configuration file.")
+                    click.echo(
+                        f"Profile '{profile}' removed from configuration file."
+                    )

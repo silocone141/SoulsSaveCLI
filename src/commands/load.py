@@ -7,8 +7,9 @@ from src.utils import fetch
 
 
 @click.command()
-@click.option("--profile", "-p", "profile", type=str, required=True,
-              prompt=True)
+@click.option(
+    "--profile", "-p", "profile", type=str, required=True, prompt=True
+)
 @click.option("--name", "-n", "name", type=str, required=True, prompt=True)
 def load(profile, name):
     """
@@ -19,7 +20,8 @@ def load(profile, name):
     game_save_path = config_values["profiles"][profile]
 
     save_extension = os.path.splitext(game_save_path)[1]
-    save_file_path = fetch.resolve_save(profile, save_state_path, name,
-                                        save_extension)
+    save_file_path = fetch.resolve_save(
+        profile, save_state_path, name, save_extension
+    )
     shutil.copyfile(save_file_path, game_save_path)
     click.echo(f"Successfully loaded {profile}/{name}")

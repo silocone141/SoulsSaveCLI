@@ -29,8 +29,14 @@ def init_tmp_setup(monkeypatch, tmp_path):
     }
 
 
-def tmp_conf_setup(tmp_path, profile: str, save_states_path, game_path,
-                   create_save_state=True, create_game_save=True):
+def tmp_conf_setup(
+    tmp_path,
+    profile: str,
+    save_states_path,
+    game_path,
+    create_save_state=True,
+    create_game_save=True,
+):
     """
     Given a profile, determine the paths to its save state directory and game
     save file. Optionally create these objects with create_save_state and
@@ -52,9 +58,14 @@ def tmp_conf_setup(tmp_path, profile: str, save_states_path, game_path,
     return {"save_state_dir": save_state_dir, "game_save_path": game_save_file}
 
 
-def tmp_env_create(monkeypatch, tmp_path, params=None,
-                   create_save_states_dir=True, create_config_dir=True,
-                   create_game_saves_dir=True):
+def tmp_env_create(
+    monkeypatch,
+    tmp_path,
+    params=None,
+    create_save_states_dir=True,
+    create_config_dir=True,
+    create_game_saves_dir=True,
+):
     """
     Given a list of profile parameters, set up the specified files.
 
@@ -84,8 +95,9 @@ def tmp_env_create(monkeypatch, tmp_path, params=None,
 
     for profile in params:
         profile_name = profile["name"]
-        profile_game_path = os.path.join(game_path, profile_name,
-                                         "save-file.txt")
+        profile_game_path = os.path.join(
+            game_path, profile_name, "save-file.txt"
+        )
         profile_save_state_dir = os.path.join(save_states_path, profile_name)
 
         profile_paths[profile_name] = {}
@@ -95,11 +107,18 @@ def tmp_env_create(monkeypatch, tmp_path, params=None,
         if profile["add_to_config"]:
             config_data["profiles"][profile_name] = profile_game_path
 
-        tmp_conf_setup(tmp_path, profile_name, save_states_path, game_path,
-                       create_save_state=(profile["create_save_state"] and
-                                          create_save_states_dir),
-                       create_game_save=(profile["create_game_save"] and
-                                         create_game_saves_dir))
+        tmp_conf_setup(
+            tmp_path,
+            profile_name,
+            save_states_path,
+            game_path,
+            create_save_state=(
+                profile["create_save_state"] and create_save_states_dir
+            ),
+            create_game_save=(
+                profile["create_game_save"] and create_game_saves_dir
+            ),
+        )
 
     if create_config_dir:
         os.mkdir(config_path)
@@ -176,7 +195,7 @@ def set_test_invalid_save_file(monkeypatch, tmp_path):
         "config_data": tmp_data["config_data"],
         "save_states_paths": {
             "happy-path": happy_save_state_path,
-            "no-game": no_game_save_state_path
+            "no-game": no_game_save_state_path,
         },
     }
 
@@ -191,15 +210,23 @@ def set_test_init(monkeypatch, tmp_path):
     Test environment to simulate a fresh installation: do not create
     $XDG_CONFIG_HOME/soulsave or the save state directories
     """
-    tmp_paths = tmp_env_create(monkeypatch, tmp_path, create_config_dir=False,
-                               create_save_states_dir=False,
-                               create_game_saves_dir=False)
+    tmp_paths = tmp_env_create(
+        monkeypatch,
+        tmp_path,
+        create_config_dir=False,
+        create_save_states_dir=False,
+        create_game_saves_dir=False,
+    )
     config_path = tmp_paths["config_path"]
     config_file = tmp_paths["config_file"]
     save_states_path = tmp_paths["save_states_path"]
 
-    return {"tmp_path": tmp_path, "config_path": config_path,
-            "config_file": config_file, "save_states_path": save_states_path}
+    return {
+        "tmp_path": tmp_path,
+        "config_path": config_path,
+        "config_file": config_file,
+        "save_states_path": save_states_path,
+    }
 
 
 @pytest.fixture
@@ -223,7 +250,7 @@ def set_test_new_no_mkdir(monkeypatch, tmp_path):
     tmp_data = {
         "config_file": config_file,
         "config_data": config_data,
-        "profile_paths": tmp_data["profile_paths"]
+        "profile_paths": tmp_data["profile_paths"],
     }
     fetch.write_data(config_file, config_data)
 

@@ -9,10 +9,12 @@ def assert_config_matches(target_data: dict, config_file: str) -> None:
     equal to the contents of the JSON file.
     """
     config_data = fetch.get_data(config_file)
-    assert target_data == config_data, ("Config data does not "
-                                        "match target_data.\n"
-                                        f"Config data: '{config_data}'\n"
-                                        f"Target data: '{target_data}'")
+    assert target_data == config_data, (
+        "Config data does not "
+        "match target_data.\n"
+        f"Config data: '{config_data}'\n"
+        f"Target data: '{target_data}'"
+    )
 
 
 def get_txt(path: str) -> str:

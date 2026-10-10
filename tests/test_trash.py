@@ -20,8 +20,9 @@ def test_trash_dry_run(set_test_trash):
     # ----------------------
     # Test: Delete profile
     # ----------------------
-    result = CliRunner().invoke(cli, ["trash", "--dry-run", "--profile",
-                                      "confirm"], input="y")
+    result = CliRunner().invoke(
+        cli, ["trash", "--dry-run", "--profile", "confirm"], input="y"
+    )
 
     assert result.exit_code == 0
     assert "Action would move 2 file(s)" in result.output
@@ -32,9 +33,18 @@ def test_trash_dry_run(set_test_trash):
     # -----------------------
     # Test: Delete save state
     # -----------------------
-    result = CliRunner().invoke(cli, ["trash", "--dry-run", "--profile",
-                                      "confirm", "--save-state", "saved-state"
-                                      ], input="y")
+    result = CliRunner().invoke(
+        cli,
+        [
+            "trash",
+            "--dry-run",
+            "--profile",
+            "confirm",
+            "--save-state",
+            "saved-state",
+        ],
+        input="y",
+    )
 
     assert result.exit_code == 0
     assert "Action would move 1 file(s)" in result.output
@@ -58,8 +68,9 @@ def test_trash_profile_with_config_update_happy_path(set_test_trash):
     # -----------------------
     # Test: With confirmation
     # -----------------------
-    result = CliRunner().invoke(cli, ["trash", "--profile", "confirm"],
-                                input="y\ny")
+    result = CliRunner().invoke(
+        cli, ["trash", "--profile", "confirm"], input="y\ny"
+    )
 
     target_data = {
         "save_states": save_states_path,
@@ -79,8 +90,9 @@ def test_trash_profile_with_config_update_happy_path(set_test_trash):
     # --------------
     # Test: --silent
     # --------------
-    result = CliRunner().invoke(cli, ["trash", "--silent", "--profile",
-                                      "silent"])
+    result = CliRunner().invoke(
+        cli, ["trash", "--silent", "--profile", "silent"]
+    )
 
     target_data["profiles"] = {}
 
@@ -103,8 +115,9 @@ def test_trash_profile_no_config_update_happy_path(set_test_trash):
     config_file = tmp_data["config_file"]
     confirm_saves = tmp_data["save_states_paths"]["confirm"]
 
-    result = CliRunner().invoke(cli, ["trash", "--profile", "confirm"],
-                                input="y\nn")
+    result = CliRunner().invoke(
+        cli, ["trash", "--profile", "confirm"], input="y\nn"
+    )
 
     assert result.exit_code == 0
     assert "Action will move 2 file(s)" in result.output
@@ -142,8 +155,9 @@ def test_trash_nonexistent(set_test_trash):
     # -----------------------------------
     # Exception should be caught at fetch.resolve_save(), so no need to supply
     # input/--silent
-    result = CliRunner().invoke(cli, ["trash", "--profile", "confirm",
-                                      "--save-state", "nonexistent"])
+    result = CliRunner().invoke(
+        cli, ["trash", "--profile", "confirm", "--save-state", "nonexistent"]
+    )
 
     assert result.exit_code == 1
     assert "'nonexistent' does not exist" in result.output
@@ -162,8 +176,9 @@ def test_trash_config_only(set_test_trash_no_save_state):
     config_file = tmp_data["config_file"]
     original_files = helpers.list_files(save_states_dir)
 
-    result = CliRunner().invoke(cli, ["trash", "--profile", "config-only"],
-                                input="y\ny")
+    result = CliRunner().invoke(
+        cli, ["trash", "--profile", "config-only"], input="y\ny"
+    )
 
     assert result.exit_code == 1
     assert "File not found." in result.output

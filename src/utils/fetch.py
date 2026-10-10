@@ -23,8 +23,10 @@ def get_data(path):
         return config_data
 
     except FileNotFoundError:
-        raise click.ClickException("Config file does not exist. Run 'soulsave "
-                                   "init' to generate the file")
+        raise click.ClickException(
+            "Config file does not exist. Run 'soulsave "
+            "init' to generate the file"
+        )
 
 
 def write_data(path, data):
@@ -36,8 +38,9 @@ def get_config_home():
     """
     Get $XDG_CONFIG_HOME or $HOME/.config
     """
-    return os.getenv("XDG_CONFIG_HOME",
-                     os.path.join(os.getenv("HOME"), ".config"))
+    return os.getenv(
+        "XDG_CONFIG_HOME", os.path.join(os.getenv("HOME"), ".config")
+    )
 
 
 def get_config_dir():
@@ -79,18 +82,23 @@ def get_config_values(profile=None):
 
     if profile is not None:
         if profile not in profile_list:
-            raise ProfileDoesNotExist(f"Profile '{profile}' does not exist. "
-                                      "Use 'soulsave new' to create a new "
-                                      "profile.")
+            raise ProfileDoesNotExist(
+                f"Profile '{profile}' does not exist. "
+                "Use 'soulsave new' to create a new "
+                "profile."
+            )
 
         save_file = config_data["profiles"][profile]
         if not os.path.isfile(save_file):
-            raise InvalidSaveFile(f"Save file for profile '{profile}' does not"
-                                  f" exist. Value: '{save_file}'")
+            raise InvalidSaveFile(
+                f"Save file for profile '{profile}' does not"
+                f" exist. Value: '{save_file}'"
+            )
 
     if not os.path.isdir(save_state_path):
-        raise InvalidSaveStatePath("Configuration option 'save_states' "
-                                   "must be a valid directory")
+        raise InvalidSaveStatePath(
+            "Configuration option 'save_states' must be a valid directory"
+        )
     else:
         return {"save_states": save_state_path, "profiles": profiles}
 
@@ -112,8 +120,9 @@ def resolve_save(profile, save_states_path, save, extension):
         extension: the save file's extension
     """
     input_save_file = os.path.join(save_states_path, profile, save)
-    save_file_force_ext = os.path.join(save_states_path, profile, save
-                                       + extension)
+    save_file_force_ext = os.path.join(
+        save_states_path, profile, save + extension
+    )
 
     if os.path.isfile(input_save_file):
         return input_save_file
@@ -121,6 +130,8 @@ def resolve_save(profile, save_states_path, save, extension):
     if os.path.isfile(save_file_force_ext):
         return save_file_force_ext
 
-    raise click.ClickException(f"'{save}' does not exist. Use 'soulsave list"
-                               f" -p \"{profile}\"' to list available "
-                               "options.")
+    raise click.ClickException(
+        f"'{save}' does not exist. Use 'soulsave list"
+        f' -p "{profile}"\' to list available '
+        "options."
+    )

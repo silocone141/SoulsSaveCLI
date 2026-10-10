@@ -32,6 +32,7 @@ def get_tree(wd, rel_path):
         rel_path: the subdirectory to tree
     """
 
-    tree = subprocess.run(["tree", rel_path], capture_output=True, text=True,
-                          check=True, cwd=wd)
+    tree = subprocess.run(
+        ["tree", rel_path], capture_output=True, text=True, check=True, cwd=wd
+    )
     return tree
